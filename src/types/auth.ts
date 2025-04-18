@@ -11,3 +11,9 @@ export type LoginForm = {
     phone: string;
   };
   
+  export type JwtPayload = {
+    sub: string;
+    iat: number;
+    exp: number;
+    role?: 'ADMIN' | 'UNIVERSITY' | 'STUDENT';
+  };
