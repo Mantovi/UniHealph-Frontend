@@ -1,15 +1,17 @@
-import { Button } from "./components/ui/button"
+
+import { BrowserRouter, Route, Routes } from "react-router-dom"
+import Login from "./pages/Login"
+import Register from "./pages/Register"
 
 function App() {
 
   return (
-    <>
-      <h2 className='text-3xl text-blue-800 text-center'>UniHealph</h2>
-      <div className="justify-center flex content-start">
-
-      <Button variant="outline">Button</Button>
-      </div>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login />} /> 
+        <Route path="/register" element={<Register />} /> 
+      </Routes>
+    </BrowserRouter>
   )
 }
 
