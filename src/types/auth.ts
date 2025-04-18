@@ -10,10 +10,12 @@ export type LoginForm = {
     password: string;
     phone: string;
   };
+
+  export type UserRole = 'ADMIN' | 'UNIVERSITY' | 'STUDENT';
   
   export type JwtPayload = {
     sub: string;
     iat: number;
     exp: number;
-    role?: 'ADMIN' | 'UNIVERSITY' | 'STUDENT';
+    role: UserRole;
   };
