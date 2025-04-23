@@ -1,10 +1,10 @@
 import { createContext } from 'react';
 import { JwtPayload } from '@/types/auth';
 
-type AuthContextType = {
+type AuthContext = {
   user: JwtPayload | null;
   login: (token: string) => void;
   logout: () => void;
 };
 
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContext | undefined>(undefined);
