@@ -5,7 +5,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
-import { authService } from '@/services/authService';
 
 const Login = () => {
   const [form, setForm] = useState<LoginForm>({ email: '', password: '' });
@@ -19,16 +18,26 @@ const Login = () => {
 
   const handleSubmit = async(element: React.FormEvent) => {
     element.preventDefault();
+    setError('')
     try {
-        const user = await authService.login(form);
-        auth.login(localStorage.getItem('token')!);
-        if (user.role === 'ADMIN') navigate('/admin');
-        else if (user.role === 'UNIVERSITY') navigate('/university');
-        else navigate('/student');
-    } catch (err) {
-        setError('Login inválido'); 
+        const response = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(form)
+        });
+
+        if (!response.ok) throw new Error('Login inválido');
+        const { token } = await response.json();
+        auth.login(token);
+
+        const decoded = JSON.parse(atob(token.split('.')[1]));
+        console.log("Decoded JWT:", decoded);
+        decoded.role = navigate('/');
+        
+    } catch {
+        setError('Login inválido');
     }
-  };
+}
 
   return (
     <AuthFormWrapper title="Login">

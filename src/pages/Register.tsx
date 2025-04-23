@@ -21,6 +21,7 @@ const Register = () => {
         await authService.register(form);
         navigate('/login');
     } catch (err) {
+        console.error('Erro ao registrar',err);
         setError('Falha ao registrar, verifique se os dados estão corretos');
     }
   };
