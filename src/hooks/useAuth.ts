@@ -1,8 +1,18 @@
-import { useContext } from 'react';
-import { AuthContext } from '@/context/AuthContext';
+// src/hooks/useAuth.ts
+import { useState } from 'react';
 
 export const useAuth = () => {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth deve ser usado dentro do AuthProvider');
-  return ctx;
+  const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
+
+  const login = (jwtToken: string) => {
+    localStorage.setItem('token', jwtToken);
+    setToken(jwtToken);
+  };
+
+  const logout = () => {
+    localStorage.removeItem('token');
+    setToken(null);
+  };
+
+  return { token, login, logout };
 };
