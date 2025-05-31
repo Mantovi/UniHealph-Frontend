@@ -1,43 +1,70 @@
 import { useState } from 'react';
-import { RegisterForm } from '@/types/auth';
-import AuthFormWrapper from '@/components/AuthFormWrapper';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { authService } from '@/services/authService';
+import { register } from '../api/authApi';
 import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
-  const [form, setForm] = useState<RegisterForm>({
-    name: '', email: '', cpf: '', password: '', phone: '' });
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [cpf, setCpf] = useState('');
+  const [phone, setPhone] = useState('');
   const navigate = useNavigate();
 
-  const handleChange = (element: React.ChangeEvent<HTMLInputElement>) => 
-    setForm((form) => ({ ...form, [element.target.name]: element.target.value }));
-  
-  const handleSubmit = async (element: React.FormEvent) => {
-    element.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
     try {
-        await authService.register(form);
+      const response = await register({ email, password, name, cpf, phone });
+      if (response) {
         navigate('/login');
-    } catch (err) {
-        console.error('Erro ao registrar',err);
-        setError('Falha ao registrar, verifique se os dados estão corretos');
+      }
+    } catch (error) {
+      console.error('Erro ao registrar', error);
     }
   };
 
   return (
-    <AuthFormWrapper title="Criar Conta">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <Input name="name" placeholder="Nome completo" value={form.name} onChange={handleChange} required />
-        <Input name="email" type="email" placeholder="E-mail institucional" value={form.email} onChange={handleChange} required />
-        <Input name="cpf" placeholder="CPF" value={form.cpf} onChange={handleChange} required />
-        <Input name="password" type="password" placeholder="Senha" value={form.password} onChange={handleChange} required />
-        <Input name="phone" placeholder="Telefone" value={form.phone} onChange={handleChange} required />
-        {error && <p className="text-red-500">{error}</p>}
-        <Button type="submit" className="w-full"> Registrar </Button>
+    <div>
+      <h2>Registrar</h2>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Nome"
+          required
+        />
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+          required
+        />
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Senha"
+          required
+        />
+        <input
+          type="text"
+          value={cpf}
+          onChange={(e) => setCpf(e.target.value)}
+          placeholder="CPF"
+          required
+        />
+        <input
+          type="text"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          placeholder="Telefone"
+          required
+        />
+        <button type="submit">Registrar</button>
       </form>
-    </AuthFormWrapper>
+    </div>
   );
 };
 
