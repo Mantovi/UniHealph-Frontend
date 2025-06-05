@@ -6,9 +6,11 @@ export interface User {
   email: string;
   cpf: string;
   phone: string;
-  role: UserRole;
+  role: 'STUDENT' | 'UNIVERSITY' | 'ADMIN';
   universityId: number | null;
+  universityName?: string;
   points: number;
   createdAt: string;
   updatedAt: string;
 }
+

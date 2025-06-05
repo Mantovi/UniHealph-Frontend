@@ -14,8 +14,8 @@ const Login = () => {
 
     try {
       const response = await login({ email, password });
-      setAuthToken(response.token);
-      navigate('/dashboard');
+      setAuthToken(response.token, response.user);
+      navigate('/products');
     } catch (error) {
       console.error('Erro de login', error);
     }

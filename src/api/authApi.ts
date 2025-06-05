@@ -1,11 +1,13 @@
 import api from './axios';
+import { Login, Register } from '../types/auth';
+import { User } from '@/types/user';
 
-interface LoginRequest {
-  email: string;
-  password: string;
+export interface LoginResponse {
+  token: string;
+  user: User;
 }
 
-export const login = async (data: LoginRequest) => {
+export const login = async (data: Login): Promise<LoginResponse> => {
   try {
     const response = await api.post('/auth/login', data);
     return response.data;
@@ -15,16 +17,7 @@ export const login = async (data: LoginRequest) => {
   }
 };
 
-// src/api/authApi.ts
-interface RegisterRequest {
-  email: string;
-  password: string;
-  name: string;
-  cpf: string;
-  phone: string;
-}
-
-export const register = async (data: RegisterRequest) => {
+export const register = async (data: Register) => {
   try {
     const response = await api.post('/auth/register', data);
     return response.status === 200;
@@ -33,4 +26,3 @@ export const register = async (data: RegisterRequest) => {
     console.error(error);
   }
 };
-
