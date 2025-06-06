@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import UniversityRequest from "./pages/UniversityRequest";
@@ -8,17 +8,25 @@ import UniversityStudents from "./pages/UniversityStudents";
 import PrivateRoute from "./components/PrivateRoute";
 import UniversityDashboard from "./pages/UniversityDashboard";
 import Profile from "./pages/Profile";
+import Header from "./components/Header";
 
-function App() {
+function AppWrapper() {
+  const location = useLocation();
+
+  const hideHeaderRoutes = ["/login", "/register", "/request", "/"];
+  const showHeader = !hideHeaderRoutes.includes(location.pathname);
+
   return (
-    <BrowserRouter>
+    <>
+      {showHeader && <Header />}
       <Routes>
         <Route path="/" element={<h1>Home</h1>} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/products" element={<Products />} />
         <Route path="/request" element={<UniversityRequest />} />
+
         <Route path="/profile" element={<Profile />} />
+        <Route path="/products" element={<Products />} />
 
         <Route element={<PrivateRoute requiredRole="ADMIN" />}>
           <Route path="/admin/see-requests" element={<AdminRequests />} />
@@ -29,6 +37,14 @@ function App() {
           <Route path="/university/dashboard" element={<UniversityDashboard />} />
         </Route>
       </Routes>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppWrapper />
     </BrowserRouter>
   );
 }
