@@ -9,6 +9,8 @@ import PrivateRoute from "./components/PrivateRoute";
 import UniversityDashboard from "./pages/UniversityDashboard";
 import Profile from "./pages/Profile";
 import Header from "./components/Header";
+import Plans from "./pages/Plans";
+import PaymentMethods from "./pages/PaymentMethods";
 
 function AppWrapper() {
   const location = useLocation();
@@ -30,6 +32,9 @@ function AppWrapper() {
 
         <Route element={<PrivateRoute requiredRole="ADMIN" />}>
           <Route path="/admin/see-requests" element={<AdminRequests />} />
+          <Route path="/admin/plans" element={<Plans />} />
+          <Route path="/admin/payments" element={<PaymentMethods />} />
+
         </Route>
 
         <Route element={<PrivateRoute requiredRole="UNIVERSITY" />}>
