@@ -11,6 +11,7 @@ import Profile from "./pages/Profile";
 import Header from "./components/Header";
 import Plans from "./pages/Plans";
 import PaymentMethods from "./pages/PaymentMethods";
+import Categories from "./pages/Categories";
 
 function AppWrapper() {
   const location = useLocation();
@@ -28,6 +29,7 @@ function AppWrapper() {
         <Route path="/request" element={<UniversityRequest />} />
 
         <Route path="/profile" element={<Profile />} />
+        <Route path="/categories" element={<Categories />} />
         <Route path="/products" element={<Products />} />
 
         <Route element={<PrivateRoute requiredRole="ADMIN" />}>
