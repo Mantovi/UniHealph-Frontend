@@ -1,26 +1,27 @@
-import { SubSpecialtyBasic } from '@/types/specialty';
+import { FC } from 'react';
+import { SubSpecialtyBasic } from '@/types/categoryHierarchy';
 
 interface Props {
-  subs: SubSpecialtyBasic[];
+  subSpecialties: SubSpecialtyBasic[];
   onSelect: (sub: SubSpecialtyBasic) => void;
-  onBack: () => void;
+  title: string;
 }
 
-const SubSpecialtyList = ({ subs, onSelect, onBack }: Props) => {
+const SubSpecialtyList: FC<Props> = ({ subSpecialties, onSelect, title }) => {
   return (
-    <div>
-      <button onClick={onBack} className="mb-4 text-blue-500 hover:underline">← Voltar para especialidades</button>
-      <div className="grid grid-cols-2 gap-4">
-        {subs.map((sub) => (
-          <div
+    <div className="mt-6">
+      <h2 className="text-xl font-semibold mb-2">Subespecialidades de {title}</h2>
+      <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {subSpecialties.map((sub) => (
+          <li
             key={sub.id}
-            className="border p-4 rounded shadow cursor-pointer hover:bg-gray-100"
             onClick={() => onSelect(sub)}
+            className="cursor-pointer p-4 border rounded hover:bg-green-50 transition"
           >
-            <h4 className="font-semibold">{sub.name}</h4>
-          </div>
+            <h4 className="text-md font-medium">{sub.name}</h4>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 };

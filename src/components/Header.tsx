@@ -22,7 +22,7 @@ const Header = () => {
 
       <nav className="flex gap-6 items-center text-gray-700 font-medium">
         <Link to="/products" className="hover:text-blue-600 transition">Produtos</Link>
-        <Link to="/specialties" className="hover:text-blue-600 transition">Categorias</Link>
+        <Link to="/categories" className="hover:text-blue-600 transition">Categorias</Link>
         <Link to="/about" className="hover:text-blue-600 transition">Sobre nós</Link>
         <Link to="/contact" className="hover:text-blue-600 transition">Contate-nos</Link>
       </nav>

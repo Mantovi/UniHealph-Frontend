@@ -14,7 +14,7 @@ const Plans = () => {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [editing, setEditing] = useState<Plan | null>(null);
   const [creating, setCreating] = useState(false);
-  const [open, setOpen] = useState(false); // controla o modal
+  const [open, setOpen] = useState(false);
 
   const loadPlans = async () => {
     const data = await getPlans();
