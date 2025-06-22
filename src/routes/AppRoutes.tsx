@@ -8,6 +8,7 @@ import AdminUniversityRequest from "@/pages/AdminUniversityRequest";
 import UniversityRequest from "@/pages/UniversityRequest";
 import Unauthorized from "@/pages/Unauthorized";
 import PermittedStudents from "@/pages/PermittedStudents";
+import UserProfile from "@/pages/UserProfile";
 
 const AppRoutes = () => {
     return (
@@ -24,6 +25,7 @@ const AppRoutes = () => {
             <Route path="/products" element={<h1>Produtos</h1>}/>
             <Route path="/see-requests" element={<AdminUniversityRequest/>}/>
             <Route path="/permitted-students" element={<PermittedStudents/>}/>
+            <Route path="/profile" element={<UserProfile/>}/>
         </Route>
     </Routes>
     );

@@ -27,4 +27,5 @@ export interface UserUpdate {
   name?: string;
   phone?: string;
   password?: string;
+  currentPassword: string;
 }
