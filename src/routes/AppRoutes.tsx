@@ -7,6 +7,7 @@ import PrivateLayout from "@/layouts/PrivateLayout";
 import AdminUniversityRequest from "@/pages/AdminUniversityRequest";
 import UniversityRequest from "@/pages/UniversityRequest";
 import Unauthorized from "@/pages/Unauthorized";
+import PermittedStudents from "@/pages/PermittedStudents";
 
 const AppRoutes = () => {
     return (
@@ -22,7 +23,7 @@ const AppRoutes = () => {
         <Route element={<PrivateLayout/>}>
             <Route path="/products" element={<h1>Produtos</h1>}/>
             <Route path="/see-requests" element={<AdminUniversityRequest/>}/>
-
+            <Route path="/permitted-students" element={<PermittedStudents/>}/>
         </Route>
     </Routes>
     );
