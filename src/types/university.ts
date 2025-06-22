@@ -2,6 +2,7 @@ export interface UniversityResponse {
   id: number;
   name: string;
   email: string;
+  cnpj: string;
   planName: string;
   paymentMethod: string;
   isActive: boolean;
