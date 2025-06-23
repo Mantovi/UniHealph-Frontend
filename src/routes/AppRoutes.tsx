@@ -15,6 +15,7 @@ import Categories from "@/pages/Categories";
 import Product from "@/pages/Product";
 import Orders from "@/pages/Orders";
 import Rentals from "@/pages/Rentals";
+import Points from "@/pages/Points";
 const AppRoutes = () => {
     return (
     <Routes>
@@ -36,6 +37,7 @@ const AppRoutes = () => {
         <Route path="/product/:id" element={<Product/>}/>
         <Route path="/orders" element={<Orders/>}/>
         <Route path="/rentals" element={<Rentals/>}/>
+        <Route path="/points" element={<Points/>}/>
       </Route>
     </Routes>
     );
