@@ -11,3 +11,9 @@ export interface SubSpecialty {
   active: boolean;
   categories: CategoryBasic[];
 }
+
+export interface SubSpecialtyRequest {
+  name: string;
+  active: boolean;
+  categories?: CategoryBasic[];
+}

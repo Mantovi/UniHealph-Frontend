@@ -11,3 +11,9 @@ export interface ProductType {
   active: boolean;
   products: ProductBasic[];
 }
+
+export interface ProductTypeRequest {
+  name: string;
+  active: boolean;
+  products?: ProductBasic[];
+}

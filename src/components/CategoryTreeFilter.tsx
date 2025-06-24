@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getSpecialtyTree } from '@/api/specialty';
+import { getSpecialtyTree } from '@/api/specialtyTree';
 import type { SpecialtyTree, ProductTypeNode } from '@/types/specialtyTree';
 
 interface Props {

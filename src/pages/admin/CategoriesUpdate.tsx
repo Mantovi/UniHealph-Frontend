@@ -1,0 +1,65 @@
+import { useEffect, useState } from 'react';
+import { getCategories, updateCategory } from '@/api/category';
+import { useParams, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import type { CategoryRequest } from '@/types/category';
+import CategoryModal from '@/components/CategoryModal';
+import { useRoleGuard } from '@/hooks/useRoleGuard';
+import type { Role } from '@/types/user';
+
+const CategoriesUpdate = () => {
+  const REQUIRED_ROLE: Role = 'ADMIN';
+  useRoleGuard(REQUIRED_ROLE);
+
+  const { id } = useParams();
+  const categoryId = Number(id);
+  const navigate = useNavigate();
+  const [initialData, setInitialData] = useState<CategoryRequest | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const all = await getCategories();
+        const found = all.find((c) => c.id === categoryId);
+        if (!found) {
+          toast.error('Categoria não encontrada');
+          return navigate('/admin/categories');
+        }
+        setInitialData({
+          name: found.name,
+          active: found.active,
+          productTypes: found.productTypes ?? [],
+        });
+      } catch {
+        toast.error('Erro ao carregar categoria');
+      }
+    };
+    load();
+  }, [categoryId, navigate]);
+
+  const handleUpdate = async (data: CategoryRequest) => {
+    try {
+      setLoading(true);
+      await updateCategory(categoryId, data);
+      toast.success('Categoria atualizada');
+      navigate('/admin/categories');
+    } catch {
+      toast.error('Erro ao atualizar categoria');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <CategoryModal
+      open
+      onClose={() => navigate('/admin/categories')}
+      onSubmit={handleUpdate}
+      initialData={initialData}
+      loading={loading}
+    />
+  );
+};
+
+export default CategoriesUpdate;

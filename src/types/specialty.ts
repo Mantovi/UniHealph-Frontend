@@ -6,3 +6,9 @@ export interface Specialty {
   active: boolean;
   subSpecialties: SubSpecialtyBasic[];
 }
+
+export interface SpecialtyRequest {
+  name: string;
+  active: boolean;
+  subSpecialties?: SubSpecialtyBasic[];
+}

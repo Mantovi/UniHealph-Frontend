@@ -9,13 +9,12 @@ interface Props {
   productTypeId: number;
 }
 
-export default function RelatedProductsSection({ currentProductId, productTypeId }: Props) {
+const RelatedProductsSection = ({ currentProductId, productTypeId }: Props) => {
   const [related, setRelated] = useState<ProductResponse[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [productTypeName, setProductTypeName] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Descobre o nome do tipo do produto atual
   useEffect(() => {
     const loadProductTypeName = async () => {
       try {
@@ -29,7 +28,6 @@ export default function RelatedProductsSection({ currentProductId, productTypeId
     loadProductTypeName();
   }, [currentProductId]);
 
-  // Carrega produtos semelhantes
   const loadMore = useCallback(async () => {
     if (!productTypeName) return;
 
@@ -39,7 +37,7 @@ export default function RelatedProductsSection({ currentProductId, productTypeId
       const filtered = result.filter(
         (p) =>
           p.id !== currentProductId &&
-          p.productTypeName === productTypeName
+          p.productTypeName === productTypeName && p.active
       );
 
       setRelated((prev) => {
@@ -91,3 +89,5 @@ export default function RelatedProductsSection({ currentProductId, productTypeId
     </section>
   );
 }
+
+export default RelatedProductsSection

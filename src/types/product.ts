@@ -30,6 +30,7 @@ export interface ProductResponse {
   productTypeId: number;
   productTypeName: string;
   availableStock: number;
+  stockThreshold: number;
   imageUrls: string[];
 }
 
@@ -42,6 +43,7 @@ export interface ProductUpdate {
   active: boolean;
   brandId: number;
   productTypeId: number;
+  productTypeName: string;
   imageUrls: string[];
 }
 

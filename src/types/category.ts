@@ -1,4 +1,4 @@
-import type { ProductTypeBasic } from "./product-type";
+import type { ProductTypeBasic } from "./productType";
 
 export interface CategoryBasic {
   id: number;
@@ -10,4 +10,10 @@ export interface Category {
   name: string;
   active: boolean;
   productTypes: ProductTypeBasic[];
+}
+
+export interface CategoryRequest {
+  name: string;
+  active: boolean;
+  productTypes?: ProductTypeBasic[];
 }

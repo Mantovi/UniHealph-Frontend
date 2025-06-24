@@ -98,7 +98,7 @@ const PermittedStudents = () => {
                             <li key={student.id} className="p-4">
                                 <p className="font-semibold">{student.name}</p>
                                 <p className="text-sm text-gray-600">
-                                    {student.email} — {student.cpf}
+                                    {student.email} - {student.cpf}
                                     </p>
                                 </li>
                             ))}

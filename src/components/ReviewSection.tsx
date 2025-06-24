@@ -8,9 +8,10 @@ import { useAuthStore } from '@/store/authStore';
 
 interface Props {
   productId: number;
+  isActive: boolean;
 }
 
-export default function ReviewSection({ productId }: Props) {
+const ReviewSection = ({ productId, isActive }: Props) => {
   const [reviews, setReviews] = useState<ReviewResponse[]>([]);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
@@ -20,7 +21,6 @@ export default function ReviewSection({ productId }: Props) {
   const { user } = useAuthStore();
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Função para carregar reviews paginadas
   const loadReviews = useCallback(async (pageToLoad: number) => {
     try {
       const newReviews = await getProductReviews(productId, pageToLoad);
@@ -35,12 +35,10 @@ export default function ReviewSection({ productId }: Props) {
     }
   }, [productId]);
 
-  // Carrega reviews ao montar componente
   useEffect(() => {
     loadReviews(0);
   }, [loadReviews]);
 
-  // Scroll infinito
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -72,12 +70,11 @@ export default function ReviewSection({ productId }: Props) {
       ? '*'.repeat(name.length)
       : name[0] + '*'.repeat(name.length - 2) + name[name.length - 1];
 
-    const myReview = reviews.find((r) => r.userId === user?.id);
-    const otherReviews = reviews.filter((r) => r.userId !== user?.id);
+  const myReview = reviews.find((r) => r.userId === user?.id);
+  const otherReviews = reviews.filter((r) => r.userId !== user?.id);
 
   return (
     <section className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      {/* Lado esquerdo: média e gráfico */}
       <div>
         <h2 className="text-lg font-semibold mb-2">Avaliações ({totalReviews})</h2>
         <div className="flex items-center gap-2 mb-4">
@@ -107,20 +104,20 @@ export default function ReviewSection({ productId }: Props) {
           </div>
         ))}
 
-        <Button className="mt-4" onClick={() => {
-          setEditReview(null);
-          setModalOpen(true);
-        }}>
-          Escrever avaliação
-        </Button>
+        {isActive && (
+          <Button className="mt-4" onClick={() => {
+            setEditReview(null);
+            setModalOpen(true);
+          }}>
+            Escrever avaliação
+          </Button>
+        )}
       </div>
 
-      {/* Lado direito: lista de avaliações */}
       <div
         className="lg:col-span-2 border rounded p-4 max-h-[480px] overflow-y-auto bg-white"
         ref={containerRef}
       >
-        {/* Review do usuário logado (destacada e com botão de edição) */}
         {myReview && (
           <div key={myReview.id} className="border-b py-3 bg-yellow-50 rounded">
             <div className="flex items-center gap-2 text-yellow-500 mb-1">
@@ -152,7 +149,6 @@ export default function ReviewSection({ productId }: Props) {
           </div>
         )}
 
-        {/* Outras avaliações */}
         {otherReviews.length === 0 ? (
           <p className="text-sm text-gray-500 mt-4">Nenhuma outra avaliação ainda.</p>
         ) : (
@@ -168,7 +164,7 @@ export default function ReviewSection({ productId }: Props) {
                   />
                 ))}
               </div>
-              <p className="text-sm font-semibold text-gray-700">{r.userId === user?.id ? ' Você' : censorName(r.userName)}</p>
+              <p className="text-sm font-semibold text-gray-700">{r.userId === user?.id ? 'Você' : censorName(r.userName)}</p>
               <p className="text-sm text-gray-600">{r.comment}</p>
               <p className="text-xs text-gray-400">
                 {new Date(r.createdAt).toLocaleDateString('pt-BR')}
@@ -178,7 +174,6 @@ export default function ReviewSection({ productId }: Props) {
         )}
       </div>
 
-      {/* Modal de criar/editar avaliação */}
       <ReviewModal
         open={modalOpen}
         productId={productId}
@@ -190,9 +185,11 @@ export default function ReviewSection({ productId }: Props) {
         }}
         onReviewSubmitted={() => {
           setPage(0);
-          loadReviews(0); // recarrega as avaliações
+          loadReviews(0);
         }}
       />
     </section>
   );
 }
+
+export default ReviewSection;

@@ -4,19 +4,44 @@ import Login from "../pages/Login";
 import Register from "@/pages/Register";
 import PermittedStudents from "@/pages/PermittedStudents";
 import UniversityRequest from "@/pages/UniversityRequest";
-import AdminUniversityRequest from "@/pages/AdminUniversityRequest";
+import AdminUniversityRequest from "@/pages/admin/AdminUniversityRequest";
 import Unauthorized from "@/pages/Unauthorized";
 import UserProfile from "@/pages/UserProfile";
 import Products from "@/pages/Products";
 import PrivateLayout from "@/layouts/PrivateLayout";
 import PublicLayout from "@/layouts/PublicLayout";
 import Cart from "@/pages/Cart";
-import Categories from "@/pages/Categories";
+import CategoriesList from "@/pages/CategoriesList";
+import Categories from "@/pages/admin/Categories";
 import Product from "@/pages/Product";
 import Orders from "@/pages/Orders";
 import Rentals from "@/pages/Rentals";
 import Points from "@/pages/Points";
-const AppRoutes = () => {
+import Admin from "@/pages/admin/Admin";
+import Plans from "@/pages/admin/Plans";
+import PlansCreate from "@/pages/admin/PlansCreate";
+import PlansUpdate from "@/pages/admin/PlansUpdate";
+import PaymentMethods from "@/pages/admin/PaymentMethods";
+import PaymentMethodsUpdate from "@/pages/admin/PaymentMethodsUpdate";
+import PaymentMethodsCreate from "@/pages/admin/PaymentMethosCreate";
+import Brands from "@/pages/admin/Brands";
+import BrandsCreate from "@/pages/admin/BrandsCreate";
+import BrandsUpdate from "@/pages/admin/BrandsUpdate";
+import Specialties from "@/pages/admin/Specialties";
+import SpecialtiesCreate from "@/pages/admin/SpecialtiesCreate";
+import SpecialtiesUpdate from "@/pages/admin/SpecialtiesUpdate";
+import SubSpecialties from "@/pages/admin/SubSpecialties";
+import SubSpecialtiesCreate from "@/pages/admin/SubSpecialtiesCreate";
+import SubSpecialtiesUpdate from "@/pages/admin/SubSpecialtiesUpdate";
+import CategoriesCreate from "@/pages/admin/CategoriesCreate";
+import CategoriesUpdate from "@/pages/admin/CategoriesUpdate";
+import ProductTypes from "@/pages/admin/ProductTypes";
+import ProductTypesCreate from "@/pages/admin/ProductTypesCreate";
+import ProductTypesUpdate from "@/pages/admin/ProductTypesUpdate";
+import ProductsList from "@/pages/admin/ProductsList";
+import ProductsCreate from "@/pages/admin/ProductsCreate";
+import ProductsUpdate from "@/pages/admin/ProductsUpdate";
+export default function AppRoutes () {
     return (
     <Routes>
       <Route element={<PublicLayout/>}>
@@ -29,18 +54,46 @@ const AppRoutes = () => {
 
       <Route element={<PrivateLayout/>}>
         <Route path="/permitted-students" element={<PermittedStudents/>}/>
-        <Route path="/see-requests" element={<AdminUniversityRequest/>}/>
         <Route path="/profile" element={<UserProfile/>}/>
-        <Route path="/categories" element={<Categories/>}/>
+        <Route path="/categories" element={<CategoriesList/>}/>
         <Route path="/products" element={<Products/>}/>
         <Route path="/cart" element={<Cart/>}/>
         <Route path="/product/:id" element={<Product/>}/>
         <Route path="/orders" element={<Orders/>}/>
         <Route path="/rentals" element={<Rentals/>}/>
         <Route path="/points" element={<Points/>}/>
+        <Route path="/admin" element={<Admin/>}/>
+      </Route>
+
+      <Route element={<PrivateLayout/>}>
+        <Route path="/admin" element={<Admin/>}/>
+        <Route path="/admin/see-requests" element={<AdminUniversityRequest/>}/>
+        <Route path="/admin/plans" element={<Plans/>}/>
+        <Route path="/admin/plans/create" element={<PlansCreate/>}/>
+        <Route path="/admin/plans/update/:id" element={<PlansUpdate/>}/>
+        <Route path="/admin/payment-methods" element={<PaymentMethods/>}/>
+        <Route path="/admin/payment-methods/create" element={<PaymentMethodsCreate/>}/>
+        <Route path="/admin/payment-methods/update/:id" element={<PaymentMethodsUpdate/>}/>
+        <Route path="/admin/brands" element={<Brands/>}/>
+        <Route path="/admin/brands/create" element={<BrandsCreate/>}/>
+        <Route path="/admin/brands/update/:id" element={<BrandsUpdate/>}/>
+        <Route path="/admin/specialties" element={<Specialties/>}/>
+        <Route path="/admin/specialties/create" element={<SpecialtiesCreate/>}/>
+        <Route path="/admin/specialties/update/:id" element={<SpecialtiesUpdate/>}/>
+        <Route path="/admin/sub-specialties" element={<SubSpecialties/>}/>
+        <Route path="/admin/sub-specialties/create" element={<SubSpecialtiesCreate/>}/>
+        <Route path="/admin/sub-specialties/update/:id" element={<SubSpecialtiesUpdate/>}/>
+        <Route path="/admin/categories" element={<Categories/>}/>
+        <Route path="/admin/categories/create" element={<CategoriesCreate/>}/>
+        <Route path="/admin/categories/update/:id" element={<CategoriesUpdate/>}/>
+        <Route path="/admin/product-types" element={<ProductTypes/>}/>
+        <Route path="/admin/product-types/create" element={<ProductTypesCreate/>}/>
+        <Route path="/admin/product-types/update/:id" element={<ProductTypesUpdate/>}/>
+        <Route path="/admin/category-hierarchy" element={<Home/>}/>
+        <Route path="/admin/products" element={<ProductsList/>}/>
+        <Route path="/admin/products/create" element={<ProductsCreate/>}/>
+        <Route path="/admin/products/update/:id" element={<ProductsUpdate/>}/>
       </Route>
     </Routes>
     );
 }
-
-export default AppRoutes;

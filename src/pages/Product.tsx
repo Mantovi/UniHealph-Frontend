@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import ReviewSection from '@/components/ReviewSection';
 import RelatedProductsSection from '@/components/RelatedProductsSection';
 
-export default function Product() {
+const Product = () => {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<ProductResponse | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -31,136 +31,149 @@ export default function Product() {
 
   if (!product) return <p className="text-center mt-10">Carregando produto...</p>;
 
-    return (
+  const isDisabled = !product.active;
+
+  return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Grid superior: imagens, info e descrição */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+      {isDisabled && (
+        <div className="mb-6 p-4 bg-red-100 border border-red-300 text-red-700 font-semibold text-center rounded">
+          Este produto está desativado e não pode ser comprado, avaliado ou adicionado ao carrinho.
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
         {/* Galeria de imagens */}
         <div className="md:col-span-4 space-y-4">
-            {selectedImage && (
+          {selectedImage && (
             <img
-                src={selectedImage}
-                alt={product.name}
-                className="w-full h-80 object-cover rounded-xl border"
+              src={selectedImage}
+              alt={product.name}
+              className="w-full h-80 object-cover rounded-xl border"
             />
-            )}
-            <div className="flex gap-2 overflow-x-auto">
+          )}
+          <div className="flex gap-2 overflow-x-auto">
             {product.imageUrls.map((url, index) => (
-                <img
+              <img
                 key={index}
                 src={url}
                 alt={`Thumb ${index}`}
                 onClick={() => setSelectedImage(url)}
                 className={`w-20 h-20 object-cover rounded cursor-pointer border ${
-                    selectedImage === url ? 'border-primary' : 'border-gray-300'
+                  selectedImage === url ? 'border-primary' : 'border-gray-300'
                 }`}
-                />
+              />
             ))}
-            </div>
+          </div>
         </div>
 
-        {/* Info principais */}
+        {/* Informações do produto */}
         <div className="md:col-span-5 space-y-4">
-            <h1 className="text-2xl font-bold">{product.name}</h1>
+          <h1 className="text-2xl font-bold break-all line-clamp-2">{product.name}</h1>
 
-            <div className="flex items-center gap-1 text-yellow-500">
+          <div className="flex items-center gap-1 text-yellow-500">
             {[1, 2, 3, 4, 5].map((i) => (
-                <Star
+              <Star
                 key={i}
                 size={20}
                 fill={i <= Math.round(product.averageRating) ? '#FACC15' : 'none'}
                 stroke="#FACC15"
-                />
+              />
             ))}
             <span className="text-sm text-gray-600 ml-1">
-                ({Number(product.averageRating).toFixed(1)})
+              ({Number(product.averageRating).toFixed(1)})
             </span>
-            </div>
+          </div>
 
-            <p className="text-3xl font-bold text-green-600">
+          <p className="text-3xl font-bold text-green-600">
             R$ {product.price.toFixed(2).replace('.', ',')}
-            </p>
+          </p>
 
-            <p className="text-sm">Tipo de venda: <strong>{product.saleType}</strong></p>
-            <p className="text-sm">Estoque disponível: <strong>{product.availableStock}</strong></p>
+          <p className="text-sm">Tipo de venda: <strong>{product.saleType}</strong></p>
+          <p className="text-sm">Estoque disponível: <strong>{product.availableStock}</strong></p>
 
-            <div className="flex gap-4 items-center">
+          <div className="flex gap-4 items-center">
             <label>Quantidade:</label>
             <input
-                type="number"
-                value={quantity}
-                onChange={(e) => setQuantity(Math.max(1, Number(e.target.value)))}
-                min={1}
-                className="border rounded px-2 py-1 w-20"
+              type="number"
+              value={quantity}
+              onChange={(e) => setQuantity(Math.max(1, Number(e.target.value)))}
+              min={1}
+              className="border rounded px-2 py-1 w-20"
+              disabled={isDisabled}
             />
-            </div>
+          </div>
 
-            {product.saleType === 'ALUGUEL' && (
+          {product.saleType === 'ALUGUEL' && (
             <div className="flex gap-4 items-center">
-                <label>Semestres:</label>
-                <input
+              <label>Semestres:</label>
+              <input
                 type="number"
                 value={semesterCount}
                 onChange={(e) => setSemesterCount(Math.max(1, Number(e.target.value)))}
                 min={1}
                 className="border rounded px-2 py-1 w-20"
-                />
+                disabled={isDisabled}
+              />
             </div>
-            )}
+          )}
 
-            <div className="flex gap-4 mt-4">
-            <Button onClick={() => setModalOpen(true)}>Comprar</Button>
+          <div className="flex gap-4 mt-4">
+            <Button onClick={() => setModalOpen(true)} disabled={isDisabled}>
+              Comprar
+            </Button>
             <Button
-                variant="secondary"
-                onClick={async () => {
+              variant="secondary"
+              onClick={async () => {
                 try {
-                    await addToCart({
+                  await addToCart({
                     productId: product.id,
                     quantity,
                     semesterCount: product.saleType === 'ALUGUEL' ? semesterCount : undefined,
-                    });
-                    toast.success('Adicionado ao carrinho');
+                  });
+                  toast.success('Adicionado ao carrinho');
                 } catch {
-                    toast.error('Erro ao adicionar ao carrinho');
+                  toast.error('Erro ao adicionar ao carrinho');
                 }
-                }}
+              }}
+              disabled={isDisabled}
             >
-                Adicionar ao carrinho
+              Adicionar ao carrinho
             </Button>
-            </div>
+          </div>
         </div>
 
         {/* Descrição lateral */}
         <div className="md:col-span-3">
-            <h2 className="text-lg font-semibold mb-2">Descrição</h2>
-            <div className="h-64 overflow-y-auto border rounded p-3 text-sm leading-relaxed bg-white">
+          <h2 className="text-lg font-semibold mb-2">Descrição</h2>
+          <div className="h-64 overflow-y-auto border rounded p-3 text-sm leading-relaxed bg-white">
             {product.description}
-            </div>
+          </div>
         </div>
-        </div>
+      </div>
 
-        {/* Espaçamento entre blocos */}
-        <div className="my-12 border-b"></div>
+      <div className="my-12 border-b"></div>
 
-        {/* Avaliações */}
-        <ReviewSection productId={product.id} />
+      {/* Avaliações e produtos relacionados */}
+      <ReviewSection productId={product.id} isActive={product.active} />
 
-        {/* Espaçamento entre seções */}
-        <div className="my-12 border-b"></div>
+      {product.active && (
+        <>
+          <div className="my-12 border-b"></div>
+          <RelatedProductsSection
+            currentProductId={product.id}
+            productTypeId={product.productTypeId}
+          />
+        </>
+      )}
 
-        {/* Produtos semelhantes */}
-        <RelatedProductsSection
-        currentProductId={product.id}
-        productTypeId={product.productTypeId}
-        />
-
-        {/* Checkout modal */}
-        <CheckoutModal
+      <CheckoutModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         onConfirm={() => toast.success('Compra confirmada!')}
         productName={product.name}
-        />
+      />
     </div>
-    );
+  );
 }
+
+export default Product;

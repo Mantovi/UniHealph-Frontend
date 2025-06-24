@@ -1,4 +1,3 @@
-// src/components/ProductSortMenu.tsx
 import type { FunctionComponent } from 'react';
 
 interface Props {

@@ -48,9 +48,6 @@ const Rentals = () => {
     loadAll();
   }, []);
 
-//   const findPenalty = (rentalId: number): PenaltyResponse | null => {
-//     return penalties.find((p) => p.isPaid === false && p.id && p.rentalId === rentalId) || null;
-//   };
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-4 space-y-6">

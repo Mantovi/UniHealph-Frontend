@@ -19,4 +19,5 @@ export interface CartItemResponse {
   saleType: SaleType;
   semesterCount?: number | null;
   imageUrl?: string | null;
+  isActive: boolean;
 }

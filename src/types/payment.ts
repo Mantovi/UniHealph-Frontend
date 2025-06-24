@@ -3,3 +3,8 @@ export interface PaymentMethod {
   type: string;
   description: string;
 }
+
+export interface PaymentMethodRequest {
+  type: string;
+  description: string;
+}

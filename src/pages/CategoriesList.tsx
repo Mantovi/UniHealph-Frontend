@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getSpecialtyTree } from '@/api/specialty';
+import { getSpecialtyTree } from '@/api/specialtyTree';
 import type { SpecialtyTree } from '@/types/specialtyTree';
 import { Card } from '@/components/ui/card';
 
-export default function Categories() {
+const CategoriesList = () => {
   const [specialties, setSpecialties] = useState<SpecialtyTree[]>([]);
   const [selectedSpecialtyId, setSelectedSpecialtyId] = useState<number | null>(null);
   const [selectedSubSpecialtyId, setSelectedSubSpecialtyId] = useState<number | null>(null);
@@ -113,3 +113,5 @@ export default function Categories() {
     </div>
   );
 }
+
+export default CategoriesList;

@@ -40,7 +40,6 @@ const OrderCard: FunctionComponent<Props> = ({ order }) => {
                 </p>
                 <p className="text-sm text-gray-600">Quantidade: {item.quantity}</p>
 
-                {/* Mostrar dados extras se for aluguel */}
                 {item.salesType === 'ALUGUEL' && (
                   <>
                     {item.semesterCount !== null && (

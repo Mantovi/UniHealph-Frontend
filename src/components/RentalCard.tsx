@@ -18,7 +18,7 @@ const RentalCard: FunctionComponent<Props> = ({ rental, penalty, onPenaltyPaid }
   const [paying, setPaying] = useState(false);
 
   const formatDate = (date: string | null) =>
-    date ? format(new Date(date), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR }) : '—';
+    date ? format(new Date(date), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR }) : '-';
 
   const handlePay = async () => {
     if (!penalty) return;
@@ -57,7 +57,7 @@ const RentalCard: FunctionComponent<Props> = ({ rental, penalty, onPenaltyPaid }
             ${penalty.isPaid ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}
         `}>
             <p>
-            <strong>Multa:</strong> R$ {penalty.amount.toFixed(2).replace('.', ',')} — {penalty.reason}
+            <strong>Multa:</strong> R$ {penalty.amount.toFixed(2).replace('.', ',')} - {penalty.reason}
             </p>
 
             {penalty.isPaid ? (

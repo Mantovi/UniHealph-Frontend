@@ -24,7 +24,7 @@ export async function submitReview(
     productId,
     rating: data.rating,
     comment: data.comment,
-    createdAt: new Date().toISOString(), // Se necessário pelo backend
+    createdAt: new Date().toISOString(),
   });
 
   if (!res.data.success) {

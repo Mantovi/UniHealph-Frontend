@@ -22,21 +22,35 @@ const ProductCard: FunctionComponent<Props> = ({ product, onAddToCart, onBuyNow,
     }
   }
 
-      const mainImage = product.imageUrls.length > 0
-        ? product.imageUrls[0]
-        : 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/330px-No-Image-Placeholder.svg.png?20200912122019';
+  const mainImage = product.imageUrls.length > 0
+    ? product.imageUrls[0]
+    : 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/330px-No-Image-Placeholder.svg.png?20200912122019';
+
+  const isDisabled = !product.active;
+
   return (
-    <div className="border rounded-xl p-4 shadow bg-white flex flex-col justify-between cursor-pointer hover:shadow-md transition"
-    onClick={handleClick}>
-        <div>
-          <img
-            src={mainImage}
-            alt={product.name}
-            className="w-full h-40 object-cover rounded-mb mb-3"
-          />
-        </div>
+    <div
+      className={`border rounded-xl p-4 shadow bg-white flex flex-col justify-between hover:shadow-md transition relative ${
+        isDisabled ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'
+      }`}
+      onClick={!isDisabled ? handleClick : undefined}
+    >
+      {!product.active && (
+        <span className="absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">
+          Desativado
+        </span>
+      )}
+
       <div>
-        <h2 className="text-lg font-semibold mb-1">{product.name}</h2>
+        <img
+          src={mainImage}
+          alt={product.name}
+          className="w-full h-40 object-cover rounded-mb mb-3"
+        />
+      </div>
+
+      <div>
+        <h2 className="text-lg font-semibold mb-1 break-words line-clamp-2">{product.name}</h2>
         <p className="text-sm text-gray-600 mb-1">
           Tipo: <strong>{product.saleType === 'VENDA' ? 'Venda' : 'Aluguel'}</strong>
         </p>
@@ -59,10 +73,12 @@ const ProductCard: FunctionComponent<Props> = ({ product, onAddToCart, onBuyNow,
       </div>
 
       <div className="flex flex-col gap-2 mt-auto">
-        <Button variant="secondary" onClick={onAddToCart}>
+        <Button variant="secondary" onClick={onAddToCart} disabled={isDisabled}>
           Adicionar ao carrinho
         </Button>
-        <Button onClick={onBuyNow}>Comprar agora</Button>
+        <Button onClick={onBuyNow} disabled={isDisabled}>
+          Comprar agora
+        </Button>
       </div>
     </div>
   );

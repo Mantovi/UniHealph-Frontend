@@ -30,12 +30,10 @@ const Products = () => {
   const [isFilterLocked, setIsFilterLocked] = useState(false);
   const lockFiltersTemporarily = () => {
     setIsFilterLocked(true);
-    setTimeout(() => setIsFilterLocked(false), 500); // trava de 500ms
+    setTimeout(() => setIsFilterLocked(false), 500);
   };
 
-  // *********** CORREÇÃO: Controle de requisição ***********
   const lastRequestId = useRef(0);
-  // *******************************************************
 
   useEffect(() => {
     const productTypeIds = searchParams.getAll('productTypeIds')
@@ -56,9 +54,7 @@ const Products = () => {
   }, [searchParams]);
 
   const loadProducts = useCallback(async () => {
-    // *********** CORREÇÃO: Incrementa o ID da requisição ***********
     const requestId = ++lastRequestId.current;
-    // ***************************************************************
     try {
       const query = searchParams.get('q')?.trim();
 
@@ -71,11 +67,9 @@ const Products = () => {
         brandIds: selectedBrandIds.length > 0 ? selectedBrandIds : undefined,
       });
 
-      // *********** CORREÇÃO: Só atualiza se for a resposta mais recente ***********
       if (requestId === lastRequestId.current) {
         setProducts(data);
       }
-      // ***************************************************************************
 
     } catch {
       if (requestId === lastRequestId.current) {

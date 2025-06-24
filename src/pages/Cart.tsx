@@ -26,8 +26,13 @@ const Cart = () => {
         getCartItems(),
         getPointsBalance(),
       ]);
+
       setItems(cartItems);
-      setSelected(prevSelected => cartItems.filter(i => prevSelected.includes(i.productId)).map((i) => i.productId));
+      setSelected(prevSelected =>
+        cartItems
+          .filter(i => prevSelected.includes(i.productId) && i.isActive)
+          .map(i => i.productId)
+      );
       setPoints(pointBalance.points);
     } catch {
       toast.error('Erro ao carregar carrinho');
@@ -40,15 +45,17 @@ const Cart = () => {
 
   useEffect(() => {
     const total = items
-      .filter((i) => selected.includes(i.productId))
+      .filter(i => selected.includes(i.productId))
       .reduce((sum, i) => sum + i.totalPrice, 0);
     setTotalBruto(total);
     setTotalFinal(total - Math.min(pointsUsed, total));
   }, [items, selected, pointsUsed]);
 
   const toggleSelect = (id: number) => {
-    setSelected((prev) =>
-      prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]
+    const product = items.find(i => i.productId === id);
+    if (!product || !product.isActive) return;
+    setSelected(prev =>
+      prev.includes(id) ? prev.filter(p => p !== id) : [...prev, id]
     );
   };
 
@@ -84,7 +91,7 @@ const Cart = () => {
 
   const handleFinalizarCompra = () => {
     if (selected.length === 0) {
-      toast.warn('Selecione ao menos um item para comprar.');
+      toast.warn('Selecione ao menos um item válido para comprar.');
       return;
     }
     setModalOpen(true);
@@ -93,15 +100,13 @@ const Cart = () => {
   const confirmPurchase = async () => {
     try {
       await checkoutCart(selected, pointsUsed);
-
       toast.success('Compra finalizada com sucesso');
       setModalOpen(false);
-
-        setItems((prev) => prev.filter((item) => !selected.includes(item.productId)));
-        setSelected([]);
-      } catch {
-        toast.error('Erro ao finalizar compra');
-      }
+      setItems(prev => prev.filter(item => !selected.includes(item.productId)));
+      setSelected([]);
+    } catch {
+      toast.error('Erro ao finalizar compra');
+    }
   };
 
   return (
@@ -117,16 +122,21 @@ const Cart = () => {
               item.imageUrl ??
               'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/330px-No-Image-Placeholder.svg.png?20200912122019';
 
+            const isDisabled = !item.isActive;
+
             return (
               <div
                 key={item.productId}
-                className="border p-4 rounded shadow flex flex-col md:flex-row gap-4 items-start"
+                className={`border p-4 rounded shadow flex flex-col md:flex-row gap-4 items-start ${
+                  isDisabled ? 'bg-red-50' : ''
+                }`}
               >
                 <input
                   type="checkbox"
                   checked={selected.includes(item.productId)}
                   onChange={() => toggleSelect(item.productId)}
                   className="mt-2"
+                  disabled={isDisabled}
                 />
 
                 <img src={image} alt={item.name} className="w-24 h-24 object-cover rounded" />
@@ -143,6 +153,12 @@ const Cart = () => {
                     Total: R$ {item.totalPrice.toFixed(2).replace('.', ',')}
                   </p>
 
+                  {isDisabled && (
+                    <p className="text-red-600 font-semibold mt-1">
+                      Produto desativado - não pode ser comprado
+                    </p>
+                  )}
+
                   <div className="flex flex-wrap gap-4 mt-3">
                     <div className="flex items-center gap-2">
                       <span>Qtd:</span>
@@ -151,7 +167,7 @@ const Cart = () => {
                         onClick={() =>
                           updateItem(item.productId, item.quantity - 1, item.semesterCount || undefined)
                         }
-                        disabled={item.quantity <= 1}
+                        disabled={item.quantity <= 1 || isDisabled}
                       >
                         -
                       </Button>
@@ -161,6 +177,7 @@ const Cart = () => {
                         onClick={() =>
                           updateItem(item.productId, item.quantity + 1, item.semesterCount || undefined)
                         }
+                        disabled={isDisabled}
                       >
                         +
                       </Button>
@@ -174,7 +191,7 @@ const Cart = () => {
                           onClick={() =>
                             updateItem(item.productId, item.quantity, (item.semesterCount || 1) - 1)
                           }
-                          disabled={!item.semesterCount || item.semesterCount <= 1}
+                          disabled={!item.semesterCount || item.semesterCount <= 1 || isDisabled}
                         >
                           -
                         </Button>
@@ -184,6 +201,7 @@ const Cart = () => {
                           onClick={() =>
                             updateItem(item.productId, item.quantity, (item.semesterCount || 1) + 1)
                           }
+                          disabled={isDisabled}
                         >
                           +
                         </Button>
@@ -240,6 +258,6 @@ const Cart = () => {
       />
     </div>
   );
-}
+};
 
 export default Cart;

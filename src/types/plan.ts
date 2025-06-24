@@ -6,3 +6,10 @@ export interface Plan {
   priceYearly: number;
   description: string;
 }
+export interface PlanRequest {
+  name: string;
+  maxStudents: number;
+  priceMonthly: number;
+  priceYearly: number;
+  description: string;
+}
