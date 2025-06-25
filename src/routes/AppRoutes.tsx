@@ -15,7 +15,7 @@ import CategoriesList from "@/pages/CategoriesList";
 import Categories from "@/pages/admin/Categories";
 import Product from "@/pages/Product";
 import Orders from "@/pages/Orders";
-import Rentals from "@/pages/Rentals";
+import Rentals from "@/pages/admin/Rentals";
 import Points from "@/pages/Points";
 import Admin from "@/pages/admin/Admin";
 import Plans from "@/pages/admin/Plans";
@@ -62,7 +62,6 @@ export default function AppRoutes () {
         <Route path="/orders" element={<Orders/>}/>
         <Route path="/rentals" element={<Rentals/>}/>
         <Route path="/points" element={<Points/>}/>
-        <Route path="/admin" element={<Admin/>}/>
       </Route>
 
       <Route element={<PrivateLayout/>}>
@@ -93,6 +92,7 @@ export default function AppRoutes () {
         <Route path="/admin/products" element={<ProductsList/>}/>
         <Route path="/admin/products/create" element={<ProductsCreate/>}/>
         <Route path="/admin/products/update/:id" element={<ProductsUpdate/>}/>
+        <Route path="/admin/rentals" element={<Rentals/>}/>
       </Route>
     </Routes>
     );

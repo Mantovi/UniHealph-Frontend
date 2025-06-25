@@ -10,6 +10,6 @@ export interface RentalResponse {
   status: RentalStatus;
   rentedAt: string;
   expectedReturn: string;
-  returnedAt: string;
+  returnedAt: string | null;
 }
 
