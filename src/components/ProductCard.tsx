@@ -75,7 +75,13 @@ const ProductCard: FunctionComponent<Props> = ({ product, onAddToCart, onViewDet
         <Button variant="secondary" onClick={(e) => {e.stopPropagation(); onAddToCart();}} disabled={isDisabled}>
           Adicionar ao carrinho
         </Button>
-        <Button onClick={(e) => {e.stopPropagation(); navigate(`/product/${product.id}`);}} disabled={isDisabled}>
+        <Button onClick={(e) => {e.stopPropagation()
+          if (onViewDetails) {
+            onViewDetails();
+          } else {
+            navigate(`/product/${product.id}`);
+          }}}
+          disabled={isDisabled}>
           Ver Produto
         </Button>
       </div>

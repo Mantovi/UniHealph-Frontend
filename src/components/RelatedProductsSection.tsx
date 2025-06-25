@@ -3,6 +3,7 @@ import { getRelatedProducts, getProductById } from '@/api/products';
 import type { ProductResponse } from '@/types/product';
 import ProductCard from './ProductCard';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   currentProductId: number;
@@ -14,6 +15,8 @@ const RelatedProductsSection = ({ currentProductId, productTypeId }: Props) => {
   const [hasMore, setHasMore] = useState(true);
   const [productTypeName, setProductTypeName] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadProductTypeName = async () => {
@@ -37,7 +40,8 @@ const RelatedProductsSection = ({ currentProductId, productTypeId }: Props) => {
       const filtered = result.filter(
         (p) =>
           p.id !== currentProductId &&
-          p.productTypeName === productTypeName && p.active
+          p.productTypeName === productTypeName &&
+          p.active
       );
 
       setRelated((prev) => {
@@ -46,13 +50,10 @@ const RelatedProductsSection = ({ currentProductId, productTypeId }: Props) => {
         for (const item of all) {
           map.set(item.id, item);
         }
-
         const unique = Array.from(map.values());
-
         if (unique.length === prev.length) {
           setHasMore(false);
         }
-
         return unique;
       });
     } catch {
@@ -63,6 +64,11 @@ const RelatedProductsSection = ({ currentProductId, productTypeId }: Props) => {
   useEffect(() => {
     if (productTypeName) loadMore();
   }, [loadMore, productTypeName]);
+
+  const handleViewRelated = (productId: number) => {
+    navigate(`/product/${productId}`);
+    window.location.href = `/product/${productId}`;
+  };
 
   return (
     <section className="mt-12">
@@ -82,7 +88,7 @@ const RelatedProductsSection = ({ currentProductId, productTypeId }: Props) => {
             key={product.id}
             product={product}
             onAddToCart={() => {}}
-            onBuyNow={() => {}}
+            onViewDetails={() => handleViewRelated(product.id)}
           />
         ))}
       </div>
@@ -90,4 +96,4 @@ const RelatedProductsSection = ({ currentProductId, productTypeId }: Props) => {
   );
 }
 
-export default RelatedProductsSection
+export default RelatedProductsSection;
