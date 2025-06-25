@@ -9,7 +9,17 @@ function App() {
   return (
     <>
       <AppRoutes/>
-      <ToastContainer/>
+      <ToastContainer
+      position="top-center"
+      autoClose={1500}
+      hideProgressBar
+      closeOnClick
+      pauseOnHover={false}
+      draggable={false}
+      newestOnTop={true}
+      limit={1}
+      theme="light"
+      style={{ fontSize: '0.875rem', minHeight: '40px' }}/>
     </>
   )
 }
