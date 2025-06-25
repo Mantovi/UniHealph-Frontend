@@ -1,7 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { searchProducts } from '@/api/products';
 import { addToCart } from '@/api/cart';
-import { checkoutItem } from '@/api/orders';
 import type { ProductResponse } from '@/types/product';
 import { toast } from 'react-toastify';
 import ProductCard from '@/components/ProductCard';
@@ -10,7 +9,6 @@ import ProductSortMenu from '@/components/ProductSortMenu';
 import CategoryTreeFilter from '@/components/CategoryTreeFilter';
 import ProductBrandFilter from '@/components/ProductBrandFilter';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import CheckoutModal from '@/components/CheckoutModal';
 
 const Products = () => {
   const [products, setProducts] = useState<ProductResponse[]>([]);
@@ -22,8 +20,6 @@ const Products = () => {
   const [searchParams] = useSearchParams();
   const [initialized, setInitialized] = useState(false);
 
-  const [modalOpen, setModalOpen] = useState(false);
-  const [productToBuy, setProductToBuy] = useState<ProductResponse | null>(null);
 
   const navigate = useNavigate();
 
@@ -152,32 +148,7 @@ const Products = () => {
     }
   };
 
-  const handleBuyNow = async (product: ProductResponse) => {
-    try {
-      await addToCart({
-        productId: product.id,
-        quantity: 1,
-        semesterCount: product.saleType === 'ALUGUEL' ? 1 : undefined,
-      });
-      setProductToBuy(product);
-      setModalOpen(true);
-    } catch {
-      toast.error('Erro ao comprar produto');
-    }
-  };
 
-  const handleConfirmPurchase = async (paymentMethod: string) => {
-    if (!productToBuy) return;
-
-    try {
-      await checkoutItem(productToBuy.id);
-      toast.success(`Compra realizada com sucesso via ${paymentMethod}`);
-      setModalOpen(false);
-      setProductToBuy(null);
-    } catch {
-      toast.error('Erro ao comprar produto');
-    }
-  };
 
   return (
     <>
@@ -219,23 +190,12 @@ const Products = () => {
                   key={product.id}
                   product={product}
                   onAddToCart={() => handleAddToCart(product)}
-                  onBuyNow={() => handleBuyNow(product)}
                 />
               ))}
             </div>
           )}
         </div>
       </div>
-
-      <CheckoutModal
-        open={modalOpen}
-        onClose={() => {
-          setModalOpen(false);
-          setProductToBuy(null);
-        }}
-        onConfirm={handleConfirmPurchase}
-        productName={productToBuy?.name}
-      />
     </>
   );
 };
