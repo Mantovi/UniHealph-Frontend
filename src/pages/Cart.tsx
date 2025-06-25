@@ -97,17 +97,18 @@ const Cart = () => {
     setModalOpen(true);
   };
 
-  const confirmPurchase = async () => {
-    try {
-      await checkoutCart(selected, pointsUsed);
-      toast.success('Compra finalizada com sucesso');
-      setModalOpen(false);
-      setItems(prev => prev.filter(item => !selected.includes(item.productId)));
-      setSelected([]);
-    } catch {
-      toast.error('Erro ao finalizar compra');
-    }
-  };
+const confirmPurchase = async () => {
+  try {
+    await checkoutCart(selected, pointsUsed);
+    toast.success('Compra finalizada com sucesso');
+    setModalOpen(false);
+    setItems(prev => prev.filter(item => !selected.includes(item.productId)));
+    setSelected([]);
+    await fetchCart();
+  } catch {
+    toast.error('Erro ao finalizar compra');
+  }
+};
 
   return (
     <div className="max-w-7xl mx-auto py-8 px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
