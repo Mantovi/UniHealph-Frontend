@@ -89,7 +89,7 @@ const Cart = () => {
     setTotalFinal(totalBruto - Math.min(pointsUsed, totalBruto));
   };
 
-  const handleFinalizarCompra = () => {
+  const handleCheckout = () => {
     if (selected.length === 0) {
       toast.warn('Selecione ao menos um item válido para comprar.');
       return;
@@ -246,7 +246,7 @@ const confirmPurchase = async () => {
 
         <p>Total com desconto: <strong>R$ {totalFinal.toFixed(2).replace('.', ',')}</strong></p>
 
-        <Button className="w-full" onClick={handleFinalizarCompra}>
+        <Button className="w-full" onClick={handleCheckout}>
           Finalizar compra
         </Button>
       </div>
