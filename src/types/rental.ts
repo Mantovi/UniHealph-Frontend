@@ -1,3 +1,5 @@
+export type RentalStatus = 'AGUARDANDO_RETIRADA' | 'EM_USO' | 'DEVOLVIDO' | 'ATRASADO' | 'DANIFICADO';
+
 export interface RentalResponse {
   id: number;
   orderItemId: number;
@@ -11,5 +13,3 @@ export interface RentalResponse {
   returnedAt: string;
 }
 
-
-export type RentalStatus = 'AGUARDANDO_RETIRADA' | 'EM_USO' | 'DEVOLVIDO' | 'ATRASADO' | 'DANIFICADO';
