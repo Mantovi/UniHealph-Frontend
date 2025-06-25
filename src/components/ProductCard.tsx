@@ -7,11 +7,10 @@ import { useNavigate } from 'react-router-dom';
 interface Props {
   product: ProductResponse;
   onAddToCart: () => void;
-  onBuyNow: () => void;
   onViewDetails?: () => void;
 }
 
-const ProductCard: FunctionComponent<Props> = ({ product, onAddToCart, onBuyNow, onViewDetails }) => {
+const ProductCard: FunctionComponent<Props> = ({ product, onAddToCart, onViewDetails }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -73,11 +72,11 @@ const ProductCard: FunctionComponent<Props> = ({ product, onAddToCart, onBuyNow,
       </div>
 
       <div className="flex flex-col gap-2 mt-auto">
-        <Button variant="secondary" onClick={onAddToCart} disabled={isDisabled}>
+        <Button variant="secondary" onClick={(e) => {e.stopPropagation(); onAddToCart();}} disabled={isDisabled}>
           Adicionar ao carrinho
         </Button>
-        <Button onClick={onBuyNow} disabled={isDisabled}>
-          Comprar agora
+        <Button onClick={(e) => {e.stopPropagation(); navigate(`/product/${product.id}`);}} disabled={isDisabled}>
+          Ver Produto
         </Button>
       </div>
     </div>

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getProductById } from '@/api/products';
-import { addToCart } from '@/api/cart';
+import { addToCart, getCartItems, removeCartItem } from '@/api/cart';
+import { checkoutItem } from '@/api/orders';
 import type { ProductResponse } from '@/types/product';
 import { toast } from 'react-toastify';
 import { Star } from 'lucide-react';
@@ -9,6 +10,8 @@ import CheckoutModal from '@/components/CheckoutModal';
 import { Button } from '@/components/ui/button';
 import ReviewSection from '@/components/ReviewSection';
 import RelatedProductsSection from '@/components/RelatedProductsSection';
+import type { AxiosError } from 'axios';
+import type { ApiResponse } from '@/types/api';
 
 const Product = () => {
   const { id } = useParams<{ id: string }>();
@@ -33,6 +36,58 @@ const Product = () => {
 
   const isDisabled = !product.active;
 
+  const handleBuyNow = async () => {
+    if (!product) return;
+
+    try {
+      const cartItems = await getCartItems();
+
+      const cartItemExistente = cartItems.find(
+        (item) => item.productId === product.id
+      );
+
+      if (cartItemExistente) {
+        const mesmaQuantidade = cartItemExistente.quantity === quantity;
+        const mesmoSemestre =
+          product.saleType !== 'ALUGUEL' ||
+          cartItemExistente.semesterCount === semesterCount;
+
+        if (!mesmaQuantidade || !mesmoSemestre) {
+          await removeCartItem(product.id);
+        }
+      }
+
+      await addToCart({
+        productId: product.id,
+        quantity,
+        semesterCount: product.saleType === 'ALUGUEL' ? semesterCount : undefined,
+      });
+
+      const cartItemsAtualizado = await getCartItems();
+      const cartItem = cartItemsAtualizado.find(
+        (item) =>
+          item.productId === product.id &&
+          item.quantity === quantity &&
+          (product.saleType !== 'ALUGUEL' || item.semesterCount === semesterCount)
+      );
+      if (!cartItem) throw new Error('Não foi possível encontrar o item no carrinho');
+
+      await checkoutItem(cartItem.productId);
+
+      setModalOpen(false);
+      toast.success('Compra realizada com sucesso!');
+
+      const updatedProduct = await getProductById(Number(id));
+      setProduct(updatedProduct);
+
+    } catch (error) {
+      const axiosError = error as AxiosError<ApiResponse<null>>;
+      const message = axiosError.response?.data?.message || 'Erro ao comprar';
+      toast.error(message);
+      setModalOpen(false);
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       {isDisabled && (
@@ -42,7 +97,6 @@ const Product = () => {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-        {/* Galeria de imagens */}
         <div className="md:col-span-4 space-y-4">
           {selectedImage && (
             <img
@@ -66,7 +120,6 @@ const Product = () => {
           </div>
         </div>
 
-        {/* Informações do produto */}
         <div className="md:col-span-5 space-y-4">
           <h1 className="text-2xl font-bold break-all line-clamp-2">{product.name}</h1>
 
@@ -142,7 +195,6 @@ const Product = () => {
           </div>
         </div>
 
-        {/* Descrição lateral */}
         <div className="md:col-span-3">
           <h2 className="text-lg font-semibold mb-2">Descrição</h2>
           <div className="h-64 overflow-y-auto border rounded p-3 text-sm leading-relaxed bg-white">
@@ -153,7 +205,6 @@ const Product = () => {
 
       <div className="my-12 border-b"></div>
 
-      {/* Avaliações e produtos relacionados */}
       <ReviewSection productId={product.id} isActive={product.active} />
 
       {product.active && (
@@ -169,7 +220,7 @@ const Product = () => {
       <CheckoutModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
-        onConfirm={() => toast.success('Compra confirmada!')}
+        onConfirm={handleBuyNow}
         productName={product.name}
       />
     </div>
