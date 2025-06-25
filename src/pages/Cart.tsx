@@ -10,15 +10,29 @@ import type { CartItemResponse } from '@/types/cart';
 import { toast } from 'react-toastify';
 import { Button } from '@/components/ui/button';
 import CheckoutModal from '@/components/CheckoutModal';
+import { getPaymentMethods } from '@/api/payment';
+import type { PaymentMethod } from '@/types/payment';
+import type { ProductResponse } from '@/types/product';
 
 const Cart = () => {
   const [items, setItems] = useState<CartItemResponse[]>([]);
   const [selected, setSelected] = useState<number[]>([]);
   const [points, setPoints] = useState(0);
   const [pointsUsed, setPointsUsed] = useState(0);
-  const [totalBruto, setTotalBruto] = useState(0);
-  const [totalFinal, setTotalFinal] = useState(0);
+  const [grossTotal, setGrossTotal] = useState(0);
+  const [finalTotal, setFinalTotal] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
+  const [product] = useState<ProductResponse | null>(null);
+  
+
+  useEffect(() => {
+    if (modalOpen) {
+      getPaymentMethods()
+        .then(setPaymentMethods)
+        .catch(() => toast.error('Erro ao carregar métodos de pagamento'));
+    }
+  }, [modalOpen]);
 
   const fetchCart = async () => {
     try {
@@ -47,8 +61,8 @@ const Cart = () => {
     const total = items
       .filter(i => selected.includes(i.productId))
       .reduce((sum, i) => sum + i.totalPrice, 0);
-    setTotalBruto(total);
-    setTotalFinal(total - Math.min(pointsUsed, total));
+    setGrossTotal(total);
+    setFinalTotal(total - Math.min(pointsUsed, total));
   }, [items, selected, pointsUsed]);
 
   const toggleSelect = (id: number) => {
@@ -81,12 +95,12 @@ const Cart = () => {
     }
   };
 
-  const calcularDesconto = () => {
+  const calculateDiscount = () => {
     if (pointsUsed > points) {
       toast.error('Você não possui pontos suficientes');
       return;
     }
-    setTotalFinal(totalBruto - Math.min(pointsUsed, totalBruto));
+    setFinalTotal(grossTotal - Math.min(pointsUsed, grossTotal));
   };
 
   const handleCheckout = () => {
@@ -226,7 +240,7 @@ const confirmPurchase = async () => {
 
       <div className="space-y-4 border rounded p-4 shadow bg-white">
         <h2 className="text-xl font-semibold">Resumo da compra</h2>
-        <p>Total bruto: <strong>R$ {totalBruto.toFixed(2).replace('.', ',')}</strong></p>
+        <p>Total bruto: <strong>R$ {grossTotal.toFixed(2).replace('.', ',')}</strong></p>
 
         <div>
           <label className="text-sm block mb-1">Usar pontos ({points} disponíveis):</label>
@@ -240,11 +254,11 @@ const confirmPurchase = async () => {
           />
         </div>
 
-        <Button onClick={calcularDesconto} className="w-full">
+        <Button onClick={calculateDiscount} className="w-full">
           Calcular desconto
         </Button>
 
-        <p>Total com desconto: <strong>R$ {totalFinal.toFixed(2).replace('.', ',')}</strong></p>
+        <p>Total com desconto: <strong>R$ {finalTotal.toFixed(2).replace('.', ',')}</strong></p>
 
         <Button className="w-full" onClick={handleCheckout}>
           Finalizar compra
@@ -255,7 +269,9 @@ const confirmPurchase = async () => {
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         onConfirm={confirmPurchase}
-        productName="itens selecionados"
+        productName={product?.name}
+        paymentMethods={paymentMethods}
+        
       />
     </div>
   );

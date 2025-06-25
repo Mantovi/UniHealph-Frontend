@@ -3,7 +3,9 @@ import { useParams } from 'react-router-dom';
 import { getProductById } from '@/api/products';
 import { addToCart, getCartItems, removeCartItem } from '@/api/cart';
 import { checkoutItem } from '@/api/orders';
+import { getPaymentMethods } from '@/api/payment';
 import type { ProductResponse } from '@/types/product';
+import type { PaymentMethod } from '@/types/payment';
 import { toast } from 'react-toastify';
 import { Star } from 'lucide-react';
 import CheckoutModal from '@/components/CheckoutModal';
@@ -20,6 +22,16 @@ const Product = () => {
   const [quantity, setQuantity] = useState(1);
   const [semesterCount, setSemesterCount] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
+
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
+
+  useEffect(() => {
+    if (modalOpen) {
+      getPaymentMethods()
+        .then(setPaymentMethods)
+        .catch(() => toast.error('Erro ao carregar métodos de pagamento'));
+    }
+  }, [modalOpen]);
 
   useEffect(() => {
     if (!id) return;
@@ -42,17 +54,17 @@ const Product = () => {
     try {
       const cartItems = await getCartItems();
 
-      const cartItemExistente = cartItems.find(
+      const cartExistingItem = cartItems.find(
         (item) => item.productId === product.id
       );
 
-      if (cartItemExistente) {
-        const mesmaQuantidade = cartItemExistente.quantity === quantity;
-        const mesmoSemestre =
+      if (cartExistingItem) {
+        const sameQuantity = cartExistingItem.quantity === quantity;
+        const sameSemester =
           product.saleType !== 'ALUGUEL' ||
-          cartItemExistente.semesterCount === semesterCount;
+          cartExistingItem.semesterCount === semesterCount;
 
-        if (!mesmaQuantidade || !mesmoSemestre) {
+        if (!sameQuantity || !sameSemester) {
           await removeCartItem(product.id);
         }
       }
@@ -63,8 +75,8 @@ const Product = () => {
         semesterCount: product.saleType === 'ALUGUEL' ? semesterCount : undefined,
       });
 
-      const cartItemsAtualizado = await getCartItems();
-      const cartItem = cartItemsAtualizado.find(
+      const cartUpdatedItems = await getCartItems();
+      const cartItem = cartUpdatedItems.find(
         (item) =>
           item.productId === product.id &&
           item.quantity === quantity &&
@@ -222,6 +234,7 @@ const Product = () => {
         onClose={() => setModalOpen(false)}
         onConfirm={handleBuyNow}
         productName={product.name}
+        paymentMethods={paymentMethods}
       />
     </div>
   );
