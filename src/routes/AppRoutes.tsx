@@ -41,6 +41,7 @@ import ProductTypesUpdate from "@/pages/admin/ProductTypesUpdate";
 import ProductsList from "@/pages/admin/ProductsList";
 import ProductsCreate from "@/pages/admin/ProductsCreate";
 import ProductsUpdate from "@/pages/admin/ProductsUpdate";
+import CategoryHierarchy from "@/pages/admin/CategoryHierarchy";
 export default function AppRoutes () {
     return (
     <Routes>
@@ -88,7 +89,7 @@ export default function AppRoutes () {
         <Route path="/admin/product-types" element={<ProductTypes/>}/>
         <Route path="/admin/product-types/create" element={<ProductTypesCreate/>}/>
         <Route path="/admin/product-types/update/:id" element={<ProductTypesUpdate/>}/>
-        <Route path="/admin/category-hierarchy" element={<Home/>}/>
+        <Route path="/admin/category-hierarchy" element={<CategoryHierarchy/>}/>
         <Route path="/admin/products" element={<ProductsList/>}/>
         <Route path="/admin/products/create" element={<ProductsCreate/>}/>
         <Route path="/admin/products/update/:id" element={<ProductsUpdate/>}/>
