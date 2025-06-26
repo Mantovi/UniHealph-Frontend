@@ -72,10 +72,28 @@ const CategoryHierarchy = () => {
   };
 
   const handleSelectSuperior = async (id: number) => {
-    setSelectedSuperiorId(id);
-    await loadInferiors(mode!);
+  setSelectedSuperiorId(id);
+  await loadInferiors(mode!);
+    if (mode === 'specialty-sub') {
+      const allSpecialties = await getSpecialties();
+      const found = allSpecialties.find((s) => s.id === id);
+      setSelectedInferiorIds(found ? found.subSpecialties.map(sub => sub.id) : []);
+    } else if (mode === 'sub-category') {
+      const allSubs = await getSubSpecialties();
+      const found = allSubs.find((s) => s.id === id);
+      setSelectedInferiorIds(found ? found.categories.map(cat => cat.id) : []);
+    } else if (mode === 'category-type') {
+      const allCats = await getCategories();
+      const found = allCats.find((c) => c.id === id);
+      setSelectedInferiorIds(found ? found.productTypes.map(pt => pt.id) : []);
+    } else if (mode === 'type-product') {
+      const allTypes = await getProductTypes();
+      const found = allTypes.find((t) => t.id === id);
+      setSelectedInferiorIds(found ? (found.products?.map(p => p.id) ?? []) : []);
+    } else {
+      setSelectedInferiorIds([]);
+    }
     setStep(2);
-    setSelectedInferiorIds([]);
   };
 
   const toggleInferior = (id: number) => {
@@ -84,22 +102,22 @@ const CategoryHierarchy = () => {
     );
   };
 
-  const handleLink = async () => {
-    if (!mode || !selectedSuperiorId || selectedInferiorIds.length === 0) return;
-    try {
-      switch (mode) {
-        case 'specialty-sub':
-          await linkSubSpecialtiesToSpecialty(selectedSuperiorId, selectedInferiorIds);
-          break;
-        case 'sub-category':
-          await linkCategoriesToSubSpecialty(selectedSuperiorId, selectedInferiorIds);
-          break;
-        case 'category-type':
-          await linkProductTypesToCategory(selectedSuperiorId, selectedInferiorIds);
-          break;
-        case 'type-product':
-          await linkProductsToProductType(selectedSuperiorId, selectedInferiorIds);
-          break;
+const handleLink = async () => {
+  if (!mode || !selectedSuperiorId) return;
+  try {
+    switch (mode) {
+      case 'specialty-sub':
+        await linkSubSpecialtiesToSpecialty(selectedSuperiorId, selectedInferiorIds);
+        break;
+      case 'sub-category':
+        await linkCategoriesToSubSpecialty(selectedSuperiorId, selectedInferiorIds);
+        break;
+      case 'category-type':
+        await linkProductTypesToCategory(selectedSuperiorId, selectedInferiorIds);
+        break;
+      case 'type-product':
+        await linkProductsToProductType(selectedSuperiorId, selectedInferiorIds);
+        break;
       }
       toast.success('Vinculação realizada com sucesso!');
       setMode(null);
