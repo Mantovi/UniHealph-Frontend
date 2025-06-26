@@ -1,4 +1,4 @@
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -42,6 +42,7 @@ const BrandModal = ({ open, onClose, onSubmit, initialData, loading }: Props) =>
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent>
+        <DialogTitle>Marca</DialogTitle>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <h2 className="text-xl font-semibold">{initialData ? 'Editar Marca' : 'Nova Marca'}</h2>
 

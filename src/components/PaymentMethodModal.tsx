@@ -1,4 +1,4 @@
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -46,6 +46,7 @@ const PaymentMethodModal = ({ open, onClose, onSubmit, initialData, loading }: P
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent>
+        <DialogTitle>Método de pagamento</DialogTitle>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <h2 className="text-xl font-semibold">{initialData ? 'Editar método' : 'Novo método de pagamento'}</h2>
 

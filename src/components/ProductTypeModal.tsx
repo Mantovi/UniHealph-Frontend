@@ -1,4 +1,4 @@
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -41,6 +41,7 @@ const ProductTypeModal = ({ open, onClose, onSubmit, initialData, loading }: Pro
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent>
+        <DialogTitle>Tipo de Produto</DialogTitle>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <h2 className="text-xl font-semibold">
             {initialData ? 'Editar Tipo de Produto' : 'Novo Tipo de Produto'}

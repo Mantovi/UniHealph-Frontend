@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
@@ -65,6 +65,7 @@ export default function ReviewModal({
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent>
+        <DialogTitle>Avaliação</DialogTitle>
         <div className="space-y-4">
           <h2 className="text-lg font-semibold">
             {mode === 'edit' ? 'Editar avaliação' : 'Avaliar produto'}
