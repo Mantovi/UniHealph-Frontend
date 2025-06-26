@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getAllProducts, deleteProduct } from '@/api/products';
+import { activateProduct, deactivateProduct, getAllProducts } from '@/api/products';
 import type { ProductResponse } from '@/types/product';
 import { Button } from '@/components/ui/button';
 import { toast } from 'react-toastify';
@@ -13,9 +13,10 @@ const ProductsList = () => {
 
   const [products, setProducts] = useState<ProductResponse[]>([]);
   const [loading, setLoading] = useState(true);
+  const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
   const navigate = useNavigate();
 
-  const load = async () => {
+  const loadProducts = async () => {
     setLoading(true);
     try {
       const data = await getAllProducts();
@@ -27,19 +28,26 @@ const ProductsList = () => {
     }
   };
 
-  const handleDelete = async (id: number) => {
-    if (!confirm('Excluir este produto?')) return;
+  const handleToggleActive = async (id: number, currentActive: boolean) => {
+    setActionLoadingId(id);
     try {
-      await deleteProduct(id);
-      toast.success('Produto excluído');
-      load();
+      if (currentActive) {
+        await deactivateProduct(id);
+        toast.success('Produto desativado');
+      } else {
+        await activateProduct(id);
+        toast.success('Produto ativado');
+      }
+      loadProducts();
     } catch {
-      toast.error('Erro ao excluir produto');
+      toast.error('Erro ao atualizar status');
+    } finally {
+      setActionLoadingId(null);
     }
   };
 
   useEffect(() => {
-    load();
+    loadProducts();
   }, []);
 
   return (
@@ -65,8 +73,14 @@ const ProductsList = () => {
                 <Button variant="outline" onClick={() => navigate(`/admin/products/update/${p.id}`)}>
                   Editar
                 </Button>
-                <Button variant="destructive" onClick={() => handleDelete(p.id)}>
-                  Excluir
+                <Button
+                  variant={p.active ? "destructive" : "default"}
+                  onClick={() => handleToggleActive(p.id, p.active)}
+                  disabled={actionLoadingId === p.id}
+                >
+                  {actionLoadingId === p.id
+                    ? 'Aguarde...'
+                    : p.active ? 'Desativar' : 'Reativar'}
                 </Button>
               </div>
             </div>

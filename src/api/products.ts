@@ -98,3 +98,11 @@ export async function updateProduct(id: number, data: ProductUpdate): Promise<Pr
 export async function deleteProduct(id: number): Promise<void> {
   await api.delete(`/api/products/${id}`);
 }
+
+export async function deactivateProduct(id: number): Promise<void> {
+  await api.patch(`/api/products/${id}/deactivate`);
+}
+
+export async function activateProduct(id: number): Promise<void> {
+  await api.patch(`/api/products/${id}/activate`);
+}
