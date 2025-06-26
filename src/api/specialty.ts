@@ -18,3 +18,11 @@ export async function updateSpecialty(id: number, data: SpecialtyRequest): Promi
 export async function deleteSpecialty(id: number): Promise<void> {
   await api.delete(`/api/specialties/${id}`);
 }
+
+export async function deactivateSpecialty(id: number): Promise<void> {
+  await api.patch(`/api/specialties/${id}/deactivate`);
+}
+
+export async function activateSpecialty(id: number): Promise<void> {
+  await api.patch(`/api/specialties/${id}/activate`);
+}

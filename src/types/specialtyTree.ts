@@ -1,6 +1,7 @@
 export interface SpecialtyTree {
   id: number;
   name: string;
+  active: boolean;
   subSpecialties: SubSpecialtyNode[];
 }
 

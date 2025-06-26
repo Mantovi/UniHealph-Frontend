@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getSpecialties, deleteSpecialty } from '@/api/specialty';
+import { activateSpecialty, deactivateSpecialty, getSpecialties } from '@/api/specialty';
 import type { Specialty } from '@/types/specialty';
 import { Button } from '@/components/ui/button';
 import { toast } from 'react-toastify';
@@ -13,6 +13,7 @@ const Specialties = () => {
 
   const [specialties, setSpecialties] = useState<Specialty[]>([]);
   const [loading, setLoading] = useState(true);
+  const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
   const navigate = useNavigate();
 
   const loadSpecialties = async () => {
@@ -27,14 +28,21 @@ const Specialties = () => {
     }
   };
 
-  const handleDelete = async (id: number) => {
-    if (!confirm('Deseja excluir esta especialidade?')) return;
+  const handleToggleActive = async (id: number, currentActive: boolean) => {
+    setActionLoadingId(id);
     try {
-      await deleteSpecialty(id);
-      toast.success('Especialidade excluída');
+      if (currentActive) {
+        await deactivateSpecialty(id);
+        toast.success('Especialidade desativada');
+      } else {
+        await activateSpecialty(id);
+        toast.success('Especialidade ativada');
+      }
       loadSpecialties();
     } catch {
-      toast.error('Erro ao excluir');
+      toast.error('Erro ao atualizar status');
+    } finally {
+      setActionLoadingId(null);
     }
   };
 
@@ -70,8 +78,14 @@ const Specialties = () => {
                 >
                   Editar
                 </Button>
-                <Button variant="destructive" onClick={() => handleDelete(item.id)}>
-                  Excluir
+                <Button
+                  variant={item.active ? "destructive" : "default"}
+                  onClick={() => handleToggleActive(item.id, item.active)}
+                  disabled={actionLoadingId === item.id}
+                >
+                  {actionLoadingId === item.id
+                    ? 'Aguarde...'
+                    : item.active ? 'Desativar' : 'Reativar'}
                 </Button>
               </div>
             </div>
