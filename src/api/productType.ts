@@ -18,3 +18,11 @@ export async function updateProductType(id: number, data: ProductTypeRequest): P
 export async function deleteProductType(id: number): Promise<void> {
   await api.delete(`/api/product-types/${id}`);
 }
+
+export async function deactivateProductType(id: number): Promise<void> {
+  await api.patch(`/api/product-types/${id}/deactivate`);
+}
+
+export async function activateProductType(id: number): Promise<void> {
+  await api.patch(`/api/product-types/${id}/activate`);
+}

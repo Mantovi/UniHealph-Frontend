@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getSubSpecialties, deleteSubSpecialty } from '@/api/subspecialty';
+import { activateSubSpecialty, deactivateSubSpecialty, getSubSpecialties } from '@/api/subspecialty';
 import type { SubSpecialty } from '@/types/subspecialty';
 import { Button } from '@/components/ui/button';
 import { toast } from 'react-toastify';
@@ -13,9 +13,10 @@ const SubSpecialties = () => {
 
   const [subSpecialties, setSubSpecialties] = useState<SubSpecialty[]>([]);
   const [loading, setLoading] = useState(true);
+  const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
   const navigate = useNavigate();
 
-  const load = async () => {
+  const loadSubSpecialties = async () => {
     setLoading(true);
     try {
       const data = await getSubSpecialties();
@@ -27,19 +28,26 @@ const SubSpecialties = () => {
     }
   };
 
-  const handleDelete = async (id: number) => {
-    if (!confirm('Excluir esta subespecialidade?')) return;
+  const handleToggleActive = async (id: number, currentActive: boolean) => {
+    setActionLoadingId(id);
     try {
-      await deleteSubSpecialty(id);
-      toast.success('Subespecialidade excluída');
-      load();
+      if (currentActive) {
+        await deactivateSubSpecialty(id);
+        toast.success('SubEspecialidade desativada');
+      } else {
+        await activateSubSpecialty(id);
+        toast.success('SubEspecialidade ativada');
+      }
+      loadSubSpecialties();
     } catch {
-      toast.error('Erro ao excluir');
+      toast.error('Erro ao atualizar status');
+    } finally {
+      setActionLoadingId(null);
     }
   };
 
   useEffect(() => {
-    load();
+    loadSubSpecialties();
   }, []);
 
   return (
@@ -65,7 +73,15 @@ const SubSpecialties = () => {
                 <Button variant="outline" onClick={() => navigate(`/admin/sub-specialties/update/${s.id}`)}>
                   Editar
                 </Button>
-                <Button variant="destructive" onClick={() => handleDelete(s.id)}>Excluir</Button>
+                <Button
+                  variant={s.active ? "destructive" : "default"}
+                  onClick={() => handleToggleActive(s.id, s.active)}
+                  disabled={actionLoadingId === s.id}
+                >
+                  {actionLoadingId === s.id
+                    ? 'Aguarde...'
+                    : s.active ? 'Desativar' : 'Reativar'}
+                </Button>
               </div>
             </div>
           ))}

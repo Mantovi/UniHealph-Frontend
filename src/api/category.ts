@@ -18,3 +18,11 @@ export async function updateCategory(id: number, data: CategoryRequest): Promise
 export async function deleteCategory(id: number): Promise<void> {
   await api.delete(`/api/categories/${id}`);
 }
+
+export async function deactivateCategory(id: number): Promise<void> {
+  await api.patch(`/api/categories/${id}/deactivate`);
+}
+
+export async function activateCategory(id: number): Promise<void> {
+  await api.patch(`/api/categories/${id}/activate`);
+}
