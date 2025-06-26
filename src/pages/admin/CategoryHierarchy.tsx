@@ -22,6 +22,8 @@ import type { Category } from '@/types/category';
 import type { ProductType } from '@/types/productType';
 import type { ProductResponse } from '@/types/product';
 import { Button } from '@/components/ui/button';
+import type { AxiosError } from 'axios';
+import type { ApiResponse } from '@/types/api';
 
 type LinkMode = 'specialty-sub' | 'sub-category' | 'category-type' | 'type-product';
 
@@ -106,8 +108,10 @@ const CategoryHierarchy = () => {
       setSelectedSuperiorId(null);
       setInferiors([]);
       setSelectedInferiorIds([]);
-    } catch (e) {
-      toast.error('Erro ao realizar vinculação');
+    } catch (error) {
+      const axiosError = error as AxiosError<ApiResponse<null>>;
+      const message = axiosError.response?.data?.message || 'Erro ao realizar vinculação';
+      toast.error(message);
     }
   };
 
