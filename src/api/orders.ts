@@ -1,5 +1,6 @@
 import api from './axios';
 import type { ApiResponse } from '@/types/api';
+import type { DirectPurchase } from '@/types/directPurchase';
 import type { OrderResponse } from '@/types/order';
 
 export async function checkoutItem(productId: number): Promise<OrderResponse> {
@@ -9,6 +10,16 @@ export async function checkoutItem(productId: number): Promise<OrderResponse> {
 
   if (!res.data.success || !res.data.data) {
     throw new Error(res.data.message ?? 'Erro ao finalizar pedido');
+  }
+
+  return res.data.data;
+}
+
+export async function directPurchase(data: DirectPurchase): Promise<OrderResponse> {
+  const res = await api.post<ApiResponse<OrderResponse>>('/api/orders/direct-purchase', data);
+
+  if (!res.data.success || !res.data.data) {
+    throw new Error(res.data.message ?? 'Erro ao finalizar compra direta');
   }
 
   return res.data.data;

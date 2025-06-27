@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getProductById } from '@/api/products';
-import { addToCart, getCartItems, removeCartItem } from '@/api/cart';
-import { checkoutItem } from '@/api/orders';
+import { addToCart } from '@/api/cart';
+import { directPurchase } from '@/api/orders';
 import { getPaymentMethods } from '@/api/payment';
 import type { ProductResponse } from '@/types/product';
 import type { PaymentMethod } from '@/types/payment';
@@ -14,6 +14,7 @@ import ReviewSection from '@/components/ReviewSection';
 import RelatedProductsSection from '@/components/RelatedProductsSection';
 import type { AxiosError } from 'axios';
 import type { ApiResponse } from '@/types/api';
+import ProductDirectBuyModal from '@/components/ProductDirectBuyModal';
 
 const Product = () => {
   const { id } = useParams<{ id: string }>();
@@ -22,8 +23,10 @@ const Product = () => {
   const [quantity, setQuantity] = useState(1);
   const [semesterCount, setSemesterCount] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
-
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
+  const [directBuyModalOpen, setDirectBuyModalOpen] = useState(false);
+  const [pointsToUse, setPointsToUse] = useState(0);
+
 
   useEffect(() => {
     if (modalOpen) {
@@ -48,57 +51,28 @@ const Product = () => {
 
   const isDisabled = !product.active;
 
-  const handleBuyNow = async () => {
-    if (!product) return;
+const handleBuyNow = async () => {
+  if (!product) return;
+  try {
+    await directPurchase({
+      productId: product.id,
+      quantity,
+      semesterCount: product.saleType === 'ALUGUEL' ? semesterCount : undefined,
+      pointsToUse: pointsToUse
+    });
+    setModalOpen(false);
+    toast.success('Compra realizada com sucesso!');
 
-    try {
-      const cartItems = await getCartItems();
-
-      const cartExistingItem = cartItems.find(
-        (item) => item.productId === product.id
-      );
-
-      if (cartExistingItem) {
-        const sameQuantity = cartExistingItem.quantity === quantity;
-        const sameSemester =
-          product.saleType !== 'ALUGUEL' ||
-          cartExistingItem.semesterCount === semesterCount;
-
-        if (!sameQuantity || !sameSemester) {
-          await removeCartItem(product.id);
-        }
-      }
-
-      await addToCart({
-        productId: product.id,
-        quantity,
-        semesterCount: product.saleType === 'ALUGUEL' ? semesterCount : undefined,
-      });
-
-      const cartUpdatedItems = await getCartItems();
-      const cartItem = cartUpdatedItems.find(
-        (item) =>
-          item.productId === product.id &&
-          item.quantity === quantity &&
-          (product.saleType !== 'ALUGUEL' || item.semesterCount === semesterCount)
-      );
-      if (!cartItem) throw new Error('Não foi possível encontrar o item no carrinho');
-
-      await checkoutItem(cartItem.productId);
-
-      setModalOpen(false);
-      toast.success('Compra realizada com sucesso!');
-
-      const updatedProduct = await getProductById(Number(id));
-      setProduct(updatedProduct);
-
-    } catch (error) {
-      const axiosError = error as AxiosError<ApiResponse<null>>;
-      const message = axiosError.response?.data?.message || 'Erro ao comprar';
-      toast.error(message);
-      setModalOpen(false);
-    }
-  };
+    const updatedProduct = await getProductById(Number(id));
+    setProduct(updatedProduct);
+    setPointsToUse(0);
+  } catch (error) {
+    const axiosError = error as AxiosError<ApiResponse<null>>;
+    const message = axiosError.response?.data?.message || 'Erro ao comprar';
+    toast.error(message);
+    setModalOpen(false);
+  }
+};
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
@@ -183,7 +157,7 @@ const Product = () => {
           )}
 
           <div className="flex gap-4 mt-4">
-            <Button onClick={() => setModalOpen(true)} disabled={isDisabled}>
+            <Button onClick={() => setDirectBuyModalOpen(true)} disabled={isDisabled}>
               Comprar
             </Button>
             <Button
@@ -228,6 +202,17 @@ const Product = () => {
           />
         </>
       )}
+
+      <ProductDirectBuyModal
+        open={directBuyModalOpen}
+        onClose={() => setDirectBuyModalOpen(false)}
+        originalPrice={product.price * quantity}
+        onConfirm={(points) => {
+          setPointsToUse(points);
+          setDirectBuyModalOpen(false);
+          setModalOpen(true);
+        }}
+      />
 
       <CheckoutModal
         open={modalOpen}
