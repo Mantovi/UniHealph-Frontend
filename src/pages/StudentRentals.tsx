@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 
-const Rentals = () => {
+const StudentRentals = () => {
   const [rentals, setRentals] = useState<RentalResponse[]>([]);
   const [penalties, setPenalties] = useState<PenaltyResponse[]>([]);
   const [loading, setLoading] = useState(true);
@@ -92,4 +92,4 @@ const Rentals = () => {
   );
 };
 
-export default Rentals;
+export default StudentRentals;

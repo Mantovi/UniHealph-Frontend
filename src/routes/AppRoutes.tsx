@@ -42,6 +42,7 @@ import ProductsList from "@/pages/admin/ProductsList";
 import ProductsCreate from "@/pages/admin/ProductsCreate";
 import ProductsUpdate from "@/pages/admin/ProductsUpdate";
 import CategoryHierarchy from "@/pages/admin/CategoryHierarchy";
+import StudentRentals from "@/pages/StudentRentals";
 export default function AppRoutes () {
     return (
     <Routes>
@@ -61,7 +62,7 @@ export default function AppRoutes () {
         <Route path="/cart" element={<Cart/>}/>
         <Route path="/product/:id" element={<Product/>}/>
         <Route path="/orders" element={<Orders/>}/>
-        <Route path="/rentals" element={<Rentals/>}/>
+        <Route path="/rentals" element={<StudentRentals/>}/>
         <Route path="/points" element={<Points/>}/>
       </Route>
 
