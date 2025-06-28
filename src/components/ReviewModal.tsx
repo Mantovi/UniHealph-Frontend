@@ -7,6 +7,9 @@ import { Star } from 'lucide-react';
 import { submitReview, updateReview } from '@/api/reviews';
 import type { ReviewResponse } from '@/types/review';
 import { toast } from 'react-toastify';
+import { showApiMessage } from '@/utils/showApiMessage';
+import type { AxiosError } from 'axios';
+import type { ApiResponse } from '@/types/api';
 
 interface Props {
   open: boolean;
@@ -47,16 +50,26 @@ export default function ReviewModal({
 
     try {
       setLoading(true);
+      let response;
       if (mode === 'edit' && review) {
-        await updateReview(review.id, { rating, comment });
+         response = await updateReview(review.id, { rating, comment });
       } else {
-        await submitReview(productId, { rating, comment });
+        response = await submitReview(productId, { rating, comment });
       }
-      toast.success(mode === 'edit' ? 'Avaliação atualizada' : 'Avaliação enviada');
-      onReviewSubmitted();
-      onClose();
-    } catch {
-      toast.error('Erro ao enviar avaliação');
+      
+      showApiMessage(response, { successMessage: mode === 'edit' ? 'Avaliação atualizada' : 'Avaliação enviada', 
+        errorMessage: mode === 'edit' ? 'Erro ao atualizar avaliação' : 'Erro ao enviar avaliação' });
+
+        if (response.success) {
+          onReviewSubmitted();
+          onClose();
+        }
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiResponse<null>>;
+      const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao enviar avaliação';
+      toast.error(message);
     } finally {
       setLoading(false);
     }

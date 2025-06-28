@@ -19,26 +19,21 @@ export async function getProductReviews(productId: number, page: number): Promis
 export async function submitReview(
   productId: number,
   data: { rating: number; comment: string }
-): Promise<void> {
+): Promise<ApiResponse<null>> {
   const res = await api.post<ApiResponse<null>>('/api/reviews', {
     productId,
     rating: data.rating,
     comment: data.comment,
     createdAt: new Date().toISOString(),
   });
-
-  if (!res.data.success) {
-    throw new Error(res.data.message ?? 'Erro ao enviar avaliação');
-  }
+  return res.data;
 }
 
 export async function updateReview(
   reviewId: number,
   data: { rating: number; comment: string }
-): Promise<void> {
+): Promise<ApiResponse<null>> {
   const res = await api.patch<ApiResponse<null>>(`/api/reviews/${reviewId}`, data);
 
-  if (!res.data.success) {
-    throw new Error(res.data.message ?? 'Erro ao atualizar avaliação');
-  }
+  return res.data;
 }
