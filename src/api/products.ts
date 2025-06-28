@@ -75,24 +75,24 @@ export async function getRelatedProducts(productTypeId: number): Promise<Product
   return res.data.data;
 }
 
-export async function createProduct(data: ProductCreate): Promise<ProductResponse> {
+export async function createProduct(data: ProductCreate): Promise<ApiResponse<ProductResponse>> {
   const res = await api.post<ApiResponse<ProductResponse>>('/api/products', data);
 
   if (!res.data.success || !res.data.data) {
     throw new Error(res.data.message ?? 'Erro ao criar produto');
   }
 
-  return res.data.data;
+  return res.data;
 }
 
-export async function updateProduct(id: number, data: ProductUpdate): Promise<ProductResponse> {
+export async function updateProduct(id: number, data: ProductUpdate): Promise<ApiResponse<ProductResponse>> {
   const res = await api.patch<ApiResponse<ProductResponse>>(`/api/products/${id}`, data);
 
   if (!res.data.success || !res.data.data) {
     throw new Error(res.data.message ?? 'Erro ao atualizar produto');
   }
 
-  return res.data.data;
+  return res.data;
 }
 
 export async function deleteProduct(id: number): Promise<void> {

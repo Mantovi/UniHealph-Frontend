@@ -11,6 +11,9 @@ import type { Brand } from '@/types/brand';
 import type { ProductType } from '@/types/productType';
 import type { ProductUpdate } from '@/types/product';
 import { updateStockQuantity } from '@/api/stock';
+import { showApiMessage } from '@/utils/showApiMessage';
+import type { AxiosError } from 'axios';
+import type { ApiResponse } from '@/types/api';
 
 const ProductsUpdate = () => {
 const REQUIRED_ROLE: Role = 'ADMIN';
@@ -75,13 +78,21 @@ const REQUIRED_ROLE: Role = 'ADMIN';
         imageUrls: data.imageUrls,
       };
 
-      await updateProduct(productId, updatePayload);
-      await updateStockQuantity(productId, data.initialStock);
+      const response = await updateProduct(productId, updatePayload);
+      showApiMessage(response);
 
-      toast.success('Produto atualizado');
-      navigate('/admin/products');
-    } catch {
-      toast.error('Erro ao atualizar produto');
+      if (!response.success) {
+        await updateStockQuantity(productId, data.initialStock);
+        navigate('/admin/products');
+      }
+
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiResponse<null>>;
+      const message =
+        axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro inesperado';
+      toast.error(message);
     } finally {
       setLoading(false);
     }
