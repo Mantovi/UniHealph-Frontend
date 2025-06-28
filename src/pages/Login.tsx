@@ -9,6 +9,8 @@ import { toast } from 'react-toastify';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import type { AxiosError } from 'axios';
+import type { ApiResponse } from '@/types/api';
 
 const schema = z.object({
     email: z.string().email({message: "Email inválido"}),
@@ -39,9 +41,10 @@ const onSubmit = async (data: LoginRequest): Promise<void> => {
     } else {
       toast.error('Resposta inválida do servidor');
     }
-  } catch (error) {
-    console.error(error);
-    toast.error('Credenciais inválidas');
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError<ApiResponse<null>>;
+    const message = axiosError.response?.data?.message || axiosError.message || 'Erro ao fazer login';
+    toast.error(message);
   }
 };
 

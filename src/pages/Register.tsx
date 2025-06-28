@@ -36,8 +36,8 @@ const Register = () => {
 
   const onSubmit = async (data: RegisterRequest): Promise<void> => {
     try {
-      await registerUser(data);
-      toast.success('Cadastro realizado com sucesso');
+      const res = await registerUser(data);
+      toast.success(res.message || 'Cadastro realizado com sucesso');
       navigate('/login');
     } catch (error) {
         const axiosError = error as AxiosError<ApiResponse<null>>;
