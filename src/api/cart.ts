@@ -7,10 +7,22 @@ export async function addToCart(data: {
   productId: number;
   quantity: number;
   semesterCount?: number;
-}): Promise<void> {
-  await api.post<ApiResponse<null>>('/api/cart/add', null, {
+}): Promise<ApiResponse<null>> {
+  const res = await api.post<ApiResponse<null>>('/api/cart/add', null, {
     params: data,
   });
+
+  return res.data;
+}
+
+export async function updateCartItem(data: {
+  productId: number;
+  quantity: number;
+  semesterCount?: number;
+}): Promise<ApiResponse<null>> {
+  const res = await api.put('/api/cart/update', null, { params: data });
+
+  return res.data;
 }
 
 export async function getCartItems(): Promise<CartItemResponse[]> {
@@ -33,14 +45,14 @@ export async function getCartTotal(): Promise<number> {
   return res.data.data;
 }
 
-export async function updateCartItem(data: {
-  productId: number;
-  quantity: number;
-  semesterCount?: number;
-}): Promise<void> {
-  await api.put('/api/cart/update', null, { params: data });
+
+export async function removeCartItem(productId: number): Promise<ApiResponse<null>> {
+  const res = await api.delete('/api/cart/remove', { params: { productId } });
+
+  return res.data;
 }
 
-export async function removeCartItem(productId: number): Promise<void> {
-  await api.delete('/api/cart/remove', { params: { productId } });
+export async function clearCart(): Promise<ApiResponse<null>> {
+  const res = await api.delete<ApiResponse<null>>('/api/cart/clear');
+  return res.data;
 }

@@ -13,6 +13,9 @@ import CheckoutModal from '@/components/CheckoutModal';
 import { getPaymentMethods } from '@/api/payment';
 import type { PaymentMethod } from '@/types/payment';
 import type { ProductResponse } from '@/types/product';
+import { showApiMessage } from '@/utils/showApiMessage';
+import type { AxiosError } from 'axios';
+import type { ApiResponse } from '@/types/api';
 
 const Cart = () => {
   const [items, setItems] = useState<CartItemResponse[]>([]);
@@ -79,19 +82,33 @@ const Cart = () => {
     semesterCount?: number
   ) => {
     try {
-      await updateCartItem({ productId, quantity, semesterCount });
-      fetchCart();
-    } catch {
-      toast.error('Erro ao atualizar item');
+      const response = await updateCartItem({ productId, quantity, semesterCount });
+      showApiMessage(response, { successMessage: 'Item atualizado!', errorMessage: 'Erro ao atualizar item' });
+      if (response.success) {
+        fetchCart();
+      }
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiResponse<null>>;
+      const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao atualizar item';
+      toast.error(message);
     }
   };
 
   const removeItem = async (productId: number) => {
     try {
-      await removeCartItem(productId);
-      fetchCart();
-    } catch {
-      toast.error('Erro ao remover item');
+      const response = await removeCartItem(productId);
+      showApiMessage(response, { successMessage: 'Item removido!', errorMessage: 'Erro ao remover item' });
+      if (!response.success) {
+        fetchCart();
+      }
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiResponse<null>>;
+      const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao remover item';
+      toast.error(message);
     }
   };
 
@@ -113,14 +130,18 @@ const Cart = () => {
 
 const confirmPurchase = async () => {
   try {
-    await checkoutCart(selected, pointsUsed);
-    toast.success('Compra finalizada com sucesso');
+    const response = await checkoutCart(selected, pointsUsed);
+    showApiMessage(response, { successMessage: 'Compra realizada com sucesso!', errorMessage: 'Erro ao finalizar compra' });
     setModalOpen(false);
     setItems(prev => prev.filter(item => !selected.includes(item.productId)));
     setSelected([]);
     await fetchCart();
-  } catch {
-    toast.error('Erro ao finalizar compra');
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError<ApiResponse<null>>;
+    const message = axiosError.response?.data?.message ||
+      axiosError.message ||
+      'Erro ao finalizar compra';
+    toast.error(message);
   }
 };
 
