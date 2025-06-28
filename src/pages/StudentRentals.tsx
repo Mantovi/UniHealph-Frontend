@@ -7,6 +7,8 @@ import RentalCard from '@/components/RentalCard';
 import { toast } from 'react-toastify';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import type { AxiosError } from 'axios';
+import type { ApiResponse } from '@/types/api';
 
 const StudentRentals = () => {
   const [rentals, setRentals] = useState<RentalResponse[]>([]);
@@ -37,8 +39,10 @@ const StudentRentals = () => {
       ]);
       setRentals(rentalData);
       setPenalties(penaltyData);
-    } catch {
-      toast.error('Erro ao carregar aluguéis ou multas');
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiResponse<null>>;
+      const message = axiosError.response?.data?.message || axiosError.message || 'Erro ao carregar aluguels';
+      toast.error(message);
     } finally {
       setLoading(false);
     }

@@ -7,6 +7,9 @@ import { payPenalty } from '@/api/penalties';
 import { toast } from 'react-toastify';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { showApiMessage } from '@/utils/showApiMessage';
+import type { AxiosError } from 'axios';
+import type { ApiResponse } from '@/types/api';
 
 interface Props {
   rental: RentalResponse;
@@ -25,11 +28,17 @@ const RentalCard: FunctionComponent<Props> = ({ rental, penalty, onPenaltyPaid }
 
     try {
       setPaying(true);
-      await payPenalty(penalty.id);
-      toast.success('Multa paga com sucesso');
-      onPenaltyPaid();
-    } catch {
-      toast.error('Erro ao pagar multa');
+      const response = await payPenalty(penalty.id);
+      showApiMessage(response);
+      if (response.success) {
+        onPenaltyPaid();
+      };
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiResponse<null>>;
+      const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao pagar multa';
+      toast.error(message);
     } finally {
       setPaying(false);
     }

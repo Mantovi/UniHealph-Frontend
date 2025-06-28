@@ -5,6 +5,9 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'react-toastify';
 import { useRoleGuard } from '@/hooks/useRoleGuard';
 import type { Role } from '@/types/user';
+import { showApiMessage } from '@/utils/showApiMessage';
+import type { AxiosError } from 'axios';
+import type { ApiResponse } from '@/types/api';
 
 const statusOptions: { label: string, value: RentalStatus }[] = [
   { label: 'Aguardando Retirada', value: 'AGUARDANDO_RETIRADA' },
@@ -40,11 +43,17 @@ const Rentals = () => {
 
   const handleUpdateStatus = async (id: number, newStatus: RentalStatus) => {
     try {
-      await updateRentalStatus(id, newStatus);
-      toast.success('Status atualizado');
-      loadRentals(status);
-    } catch {
-      toast.error('Erro ao atualizar status');
+      const response = await updateRentalStatus(id, newStatus);
+      showApiMessage(response);
+      if (response.success) {
+        loadRentals(status);
+      }
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiResponse<null>>;
+      const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao atualizar status do aluguel';
+      toast.error(message);
     }
   };
 
