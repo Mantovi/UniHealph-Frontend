@@ -20,6 +20,10 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import type { AxiosError } from 'axios';
 import type { ApiResponse } from '@/types/api';
+import type { Plan } from '@/types/plan';
+import type { PaymentMethod } from '@/types/payment';
+import { getPlans } from '@/api/plans';
+import { getPaymentMethods } from '@/api/payment';
 
 const schema = z.object({
   name: z.string().min(3, 'Nome é obrigatório'),
@@ -36,6 +40,8 @@ const UserProfile = () => {
   const [planId, setPlanId] = useState('');
   const [paymentMethodId, setPaymentMethodId] = useState('');
   const [loading, setLoading] = useState(false);
+  const [plans, setPlans] = useState<Plan[]>([]);
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
 
   const {
     register,
@@ -51,6 +57,25 @@ const UserProfile = () => {
       password: '',
     },
 });
+
+useEffect(() => {
+  async function fetchOptions() {
+    try {
+      const [fetchedPlans, fetchedPayments] = await Promise.all([
+        getPlans(),
+        getPaymentMethods(),
+      ]);
+      setPlans(fetchedPlans);
+      setPaymentMethods(fetchedPayments);
+    } catch (error: unknown) {
+    const axiosError = error as AxiosError<ApiResponse<null>>;
+    const message = axiosError.response?.data?.message || axiosError.message || 'Erro ao fazer login';
+    toast.error(message);
+    }
+  }
+  fetchOptions();
+}, []);
+
 
 useEffect(() => {
   if (user?.role === 'UNIVERSITY') {
@@ -98,18 +123,18 @@ const onSubmit = async (data: FormData) => {
     }
 
     setAuth(localStorage.getItem('access_token')!, updatedUser);
-    reset({
-      name: updatedUser.name,
-      phone: updatedUser.phone,
-      currentPassword: '',
-      password: '',
-    });
-  } catch (error) {
-    const AxiosError = error as AxiosError<ApiResponse<null>>;
-    const message = AxiosError.response?.data?.message || 'Erro ao atualizar dados';
-    toast.error(message);
-  }
-};
+      reset({
+        name: updatedUser.name,
+        phone: updatedUser.phone,
+        currentPassword: '',
+        password: '',
+      });
+    } catch (error) {
+      const axiosError = error as AxiosError<ApiResponse<null>>;
+      const message = axiosError.response?.data?.message || 'Erro ao atualizar dados';
+      toast.error(message);
+    }
+  };
 
 
 
@@ -168,6 +193,26 @@ const onSubmit = async (data: FormData) => {
             {errors.phone && <p className="text-sm text-red-500">{errors.phone.message}</p>}
         </div>
 
+        <div>
+            <Label htmlFor="email">Email</Label>
+            <Input id="email" value={user?.email} readOnly className='bg-gray-300'/>
+        </div>
+
+        <div>
+            <Label htmlFor="cpf">CPF</Label>
+            <Input id="cpf" value={user?.cpf} readOnly className='bg-gray-300'/>
+        </div>
+        
+        <div>
+            <Label htmlFor="university">Universidade</Label>
+            <Input id="university" value={user?.universityName} readOnly className='bg-gray-300'/>
+        </div>
+
+        <div>
+            <Label htmlFor="role">Função</Label>
+            <Input id="role" value={user?.role} readOnly className='bg-gray-300'/>
+        </div>
+
         <div className="md:col-span-2">
             <Label htmlFor="password">Nova senha</Label>
             <Input id="password" type="password" {...register('password')} />
@@ -182,12 +227,12 @@ const onSubmit = async (data: FormData) => {
             )}
         </div>
 
-
         <div className="md:col-span-2">
             <Button type="submit" className="w-full" disabled={isSubmitting}>
                 {isSubmitting ? 'Salvando...' : 'Salvar alterações'}
             </Button>
         </div>
+
       </form>
 
       {user?.role === 'UNIVERSITY' && university && (
@@ -201,16 +246,41 @@ const onSubmit = async (data: FormData) => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-                <Label htmlFor="plan">Novo plano (ID)</Label>
-                <Input id="plan" value={planId} onChange={(e) => setPlanId(e.target.value)} />
+                <Label htmlFor="plan">Novo plano</Label>
+                  <select
+                    id="plan"
+                    value={planId}
+                    onChange={(e) => setPlanId(e.target.value)}
+                    className="w-full border rounded px-3 py-2"
+                  >
+                    <option value="">Selecione um plano</option>
+                    {plans.map((plan) => (
+                      <option key={plan.id} value={plan.id}>
+                        {plan.name}
+                      </option>
+                    ))}
+                  </select>
                 <Button className="mt-2 w-full" onClick={handleChangePlan} disabled={loading}>
                     Alterar plano
                 </Button>
             </div>
 
             <div>
-                <Label htmlFor="payment">Novo método de pagamento (ID)</Label>
-                <Input id="payment" value={paymentMethodId} onChange={(e) => setPaymentMethodId(e.target.value)} />
+                <Label htmlFor="payment">Novo método de pagamento</Label>
+                  <select
+                    id="payment"
+                    value={paymentMethodId}
+                    onChange={(e) => setPaymentMethodId(e.target.value)}
+                    className="w-full border rounded px-3 py-2"
+                  >
+                    <option value="">Selecione um método de pagamento</option>
+                    {paymentMethods.map((method) => (
+                      <option key={method.id} value={method.id}>
+                        {method.type}
+                      </option>
+                    ))}
+                  </select>
+
                 <Button className="mt-2 w-full" onClick={handleChangePayment} disabled={loading}>
                     Alterar pagamento
                 </Button>
