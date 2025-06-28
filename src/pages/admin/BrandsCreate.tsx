@@ -6,6 +6,7 @@ import type { BrandRequest } from '@/types/brand';
 import BrandModal from '@/components/BrandModal';
 import { useRoleGuard } from '@/hooks/useRoleGuard';
 import type { Role } from '@/types/user';
+import { showApiMessage } from '@/utils/showApiMessage';
 
 
 const BrandsCreate = () => {
@@ -18,8 +19,8 @@ const BrandsCreate = () => {
   const handleCreate = async (data: BrandRequest) => {
     try {
       setLoading(true);
-      await createBrand(data);
-      toast.success('Marca criada com sucesso');
+      const response = await createBrand(data);
+      showApiMessage(response)
       navigate('/admin/brands');
     } catch {
       toast.error('Erro ao criar marca');

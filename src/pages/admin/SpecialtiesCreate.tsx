@@ -6,6 +6,9 @@ import type { SpecialtyRequest } from '@/types/specialty';
 import SpecialtyModal from '@/components/SpecialtyModal';
 import { useRoleGuard } from '@/hooks/useRoleGuard';
 import type { Role } from '@/types/user';
+import { showApiMessage } from '@/utils/showApiMessage';
+import type { AxiosError } from 'axios';
+import type { ApiResponse } from '@/types/api';
 
 const SpecialtiesCreate = () => {
   const REQUIRED_ROLE: Role = 'ADMIN';
@@ -17,11 +20,17 @@ const SpecialtiesCreate = () => {
   const handleCreate = async (data: SpecialtyRequest) => {
     try {
       setLoading(true);
-      await createSpecialty(data);
-      toast.success('Especialidade criada');
-      navigate('/admin/specialties');
-    } catch {
-      toast.error('Erro ao criar especialidade');
+      const response = await createSpecialty(data);
+      showApiMessage(response)
+      if (!response.success) {
+        navigate('/admin/specialties');
+      }
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiResponse<null>>;
+      const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao criar especialidade';
+      toast.error(message);
     } finally {
       setLoading(false);
     }

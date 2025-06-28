@@ -7,12 +7,20 @@ export async function getProductTypes(): Promise<ProductType[]> {
   return res.data.data!;
 }
 
-export async function createProductType(data: ProductTypeRequest): Promise<void> {
-  await api.post('/api/product-types', data);
+export async function createProductType(data: ProductTypeRequest): Promise<ApiResponse<ProductType>> {
+  const res =await api.post('/api/product-types', data);
+  if (!res.data.success || !res.data.data) {
+    throw new Error(res.data.message ?? 'Erro ao criar tipo de produto');
+  }
+  return res.data;
 }
 
-export async function updateProductType(id: number, data: ProductTypeRequest): Promise<void> {
-  await api.patch(`/api/product-types/${id}`, data);
+export async function updateProductType(id: number, data: ProductTypeRequest): Promise<ApiResponse<ProductType>> {
+  const res = await api.patch(`/api/product-types/${id}`, data);
+  if (!res.data.success || !res.data.data) {
+    throw new Error(res.data.message ?? 'Erro ao atualizar tipo de produto');
+  }
+  return res.data;
 }
 
 export async function deleteProductType(id: number): Promise<void> {

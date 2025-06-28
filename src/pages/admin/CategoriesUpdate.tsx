@@ -6,6 +6,9 @@ import type { CategoryRequest } from '@/types/category';
 import CategoryModal from '@/components/CategoryModal';
 import { useRoleGuard } from '@/hooks/useRoleGuard';
 import type { Role } from '@/types/user';
+import { showApiMessage } from '@/utils/showApiMessage';
+import type { AxiosError } from 'axios';
+import type { ApiResponse } from '@/types/api';
 
 const CategoriesUpdate = () => {
   const REQUIRED_ROLE: Role = 'ADMIN';
@@ -41,11 +44,17 @@ const CategoriesUpdate = () => {
   const handleUpdate = async (data: CategoryRequest) => {
     try {
       setLoading(true);
-      await updateCategory(categoryId, data);
-      toast.success('Categoria atualizada');
-      navigate('/admin/categories');
-    } catch {
-      toast.error('Erro ao atualizar categoria');
+      const response = await updateCategory(categoryId, data);
+      showApiMessage(response);
+      if (!response.success) {
+        navigate('/admin/categories');
+      }
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiResponse<null>>;
+      const message = axiosError.response?.data?.message || 
+        axiosError.message || 
+        'Erro ao atualizar categoria';
+      toast.error(message);
     } finally {
       setLoading(false);
     }

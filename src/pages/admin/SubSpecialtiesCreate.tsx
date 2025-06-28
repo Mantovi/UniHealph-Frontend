@@ -6,6 +6,9 @@ import type { SubSpecialtyRequest } from '@/types/subspecialty';
 import SubSpecialtyModal from '@/components/SubSpecialtyModal';
 import { useRoleGuard } from '@/hooks/useRoleGuard';
 import type { Role } from '@/types/user';
+import { showApiMessage } from '@/utils/showApiMessage';
+import type { AxiosError } from 'axios';
+import type { ApiResponse } from '@/types/api';
 
 const SubSpecialtiesCreate = () => {
   const REQUIRED_ROLE: Role = 'ADMIN';
@@ -17,11 +20,17 @@ const SubSpecialtiesCreate = () => {
   const handleCreate = async (data: SubSpecialtyRequest) => {
     try {
       setLoading(true);
-      await createSubSpecialty(data);
-      toast.success('Subespecialidade criada');
-      navigate('/admin/sub-specialties');
-    } catch {
-      toast.error('Erro ao criar subespecialidade');
+      const response = await createSubSpecialty(data);
+      showApiMessage(response)
+      if (!response.success) {
+        navigate('/admin/sub-specialties');
+      }
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiResponse<null>>;
+      const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao criar sub-especialidade';
+      toast.error(message);
     } finally {
       setLoading(false);
     }

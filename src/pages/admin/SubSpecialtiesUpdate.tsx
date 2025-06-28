@@ -6,6 +6,9 @@ import type { SubSpecialtyRequest } from '@/types/subspecialty';
 import SubSpecialtyModal from '@/components/SubSpecialtyModal';
 import { useRoleGuard } from '@/hooks/useRoleGuard';
 import type { Role } from '@/types/user';
+import { showApiMessage } from '@/utils/showApiMessage';
+import type { AxiosError } from 'axios';
+import type { ApiResponse } from '@/types/api';
 
 export default function SubSpecialtiesUpdate () {
   const REQUIRED_ROLE: Role = 'ADMIN';
@@ -38,11 +41,17 @@ export default function SubSpecialtiesUpdate () {
   const handleUpdate = async (data: SubSpecialtyRequest) => {
     try {
       setLoading(true);
-      await updateSubSpecialty(subId, data);
-      toast.success('Subespecialidade atualizada');
-      navigate('/admin/sub-specialties');
-    } catch {
-      toast.error('Erro ao atualizar subespecialidade');
+      const response = await updateSubSpecialty(subId, data);
+      showApiMessage(response);
+      if (!response.success) {
+        navigate('/admin/sub-specialties');
+      }
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiResponse<null>>;
+      const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao atualizar sub-especialidade';
+      toast.error(message);
     } finally {
       setLoading(false);
     }

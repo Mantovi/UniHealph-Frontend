@@ -6,6 +6,9 @@ import type { SpecialtyRequest } from '@/types/specialty';
 import SpecialtyModal from '@/components/SpecialtyModal';
 import { useRoleGuard } from '@/hooks/useRoleGuard';
 import type { Role } from '@/types/user';
+import { showApiMessage } from '@/utils/showApiMessage';
+import type { AxiosError } from 'axios';
+import type { ApiResponse } from '@/types/api';
 
 const SpecialtiesUpdate = () => {
   const REQUIRED_ROLE: Role = 'ADMIN';
@@ -42,11 +45,17 @@ const SpecialtiesUpdate = () => {
   const handleUpdate = async (data: SpecialtyRequest) => {
     try {
       setLoading(true);
-      await updateSpecialty(specialtyId, data);
-      toast.success('Especialidade atualizada');
-      navigate('/admin/specialties');
-    } catch {
-      toast.error('Erro ao atualizar especialidade');
+      const response =await updateSpecialty(specialtyId, data);
+      showApiMessage(response);
+      if (!response.success) {
+        navigate('/admin/specialties');
+      }
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiResponse<null>>;
+      const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao atualizar especialidade';
+      toast.error(message);
     } finally {
       setLoading(false);
     }

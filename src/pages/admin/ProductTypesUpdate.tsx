@@ -6,6 +6,9 @@ import type { ProductTypeRequest } from '@/types/productType';
 import ProductTypeModal from '@/components/ProductTypeModal';
 import { useRoleGuard } from '@/hooks/useRoleGuard';
 import type { Role } from '@/types/user';
+import { showApiMessage } from '@/utils/showApiMessage';
+import type { AxiosError } from 'axios';
+import type { ApiResponse } from '@/types/api';
 
 const ProductTypesUpdate = () => {
   const REQUIRED_ROLE: Role = 'ADMIN';
@@ -40,11 +43,17 @@ const ProductTypesUpdate = () => {
   const handleUpdate = async (data: ProductTypeRequest) => {
     try {
       setLoading(true);
-      await updateProductType(typeId, data);
-      toast.success('Tipo atualizado com sucesso');
-      navigate('/admin/product-types');
-    } catch {
-      toast.error('Erro ao atualizar tipo');
+      const response = await updateProductType(typeId, data);
+      showApiMessage(response);
+      if (!response.success) { 
+        navigate('/admin/product-types');
+      }
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiResponse<null>>;
+      const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao atualizar tipo de produto';
+      toast.error(message);
     } finally {
       setLoading(false);
     }

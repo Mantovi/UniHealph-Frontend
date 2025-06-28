@@ -7,12 +7,20 @@ export async function getSubSpecialties(): Promise<SubSpecialty[]> {
   return res.data.data!;
 }
 
-export async function createSubSpecialty(data: SubSpecialtyRequest): Promise<void> {
-  await api.post('/api/sub-specialties', data);
+export async function createSubSpecialty(data: SubSpecialtyRequest): Promise<ApiResponse<SubSpecialty>> {
+  const res = await api.post('/api/sub-specialties', data);
+  if (!res.data.success || !res.data.data) {
+    throw new Error(res.data.message ?? 'Erro ao criar subespecialidade');
+  }
+  return res.data;
 }
 
-export async function updateSubSpecialty(id: number, data: SubSpecialtyRequest): Promise<void> {
-  await api.patch(`/api/sub-specialties/${id}`, data);
+export async function updateSubSpecialty(id: number, data: SubSpecialtyRequest): Promise<ApiResponse<SubSpecialty>> {
+  const res =await api.patch(`/api/sub-specialties/${id}`, data);
+  if (!res.data.success || !res.data.data) {
+    throw new Error(res.data.message ?? 'Erro ao atualizar subespecialidade');
+  }
+  return res.data;
 }
 
 export async function deleteSubSpecialty(id: number): Promise<void> {

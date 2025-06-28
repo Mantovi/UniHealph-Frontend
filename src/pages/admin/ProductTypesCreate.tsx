@@ -6,6 +6,9 @@ import type { ProductTypeRequest } from '@/types/productType';
 import ProductTypeModal from '@/components/ProductTypeModal';
 import { useRoleGuard } from '@/hooks/useRoleGuard';
 import type { Role } from '@/types/user';
+import { showApiMessage } from '@/utils/showApiMessage';
+import type { AxiosError } from 'axios';
+import type { ApiResponse } from '@/types/api';
 
 const ProductTypesCreate = () => {
   const REQUIRED_ROLE: Role = 'ADMIN';
@@ -17,11 +20,17 @@ const ProductTypesCreate = () => {
   const handleCreate = async (data: ProductTypeRequest) => {
     try {
       setLoading(true);
-      await createProductType(data);
-      toast.success('Tipo de produto criado');
-      navigate('/admin/product-types');
-    } catch {
-      toast.error('Erro ao criar tipo');
+      const response = await createProductType(data);
+      showApiMessage(response)
+      if (response.success) {
+        navigate('/admin/product-types');
+      }
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiResponse<null>>;
+      const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao criar tipo de produto';
+      toast.error(message);
     } finally {
       setLoading(false);
     }

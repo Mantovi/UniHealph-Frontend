@@ -7,12 +7,14 @@ export async function getBrands(): Promise<Brand[]> {
   return res.data.data!;
 }
 
-export async function createBrand(data: BrandRequest): Promise<void> {
-  await api.post('/api/brands', data);
+export async function createBrand(data: BrandRequest): Promise<ApiResponse<Brand>> {
+  const res = await api.post<ApiResponse<Brand>>('/api/brands', data);
+  return res.data;
 }
 
-export async function updateBrand(id: number, data: BrandRequest): Promise<void> {
-  await api.patch(`/api/brands/${id}`, data);
+export async function updateBrand(id: number, data: BrandRequest): Promise<ApiResponse<Brand>> {
+  const res = await api.patch<ApiResponse<Brand>>(`/api/brands/${id}`, data);
+  return res.data;
 }
 
 export async function deleteBrand(id: number): Promise<void> {
