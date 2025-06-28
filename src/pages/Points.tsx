@@ -4,6 +4,8 @@ import type { PointsBalance, PointsHistory, PointsType } from '@/types/points';
 import { toast } from 'react-toastify';
 import PointsCard from '@/components/PointsCard';
 import { Button } from '@/components/ui/button';
+import type { AxiosError } from 'axios';
+import type { ApiResponse } from '@/types/api';
 
 const Points = () => {
   const [balance, setBalance] = useState<PointsBalance | null>(null);
@@ -20,8 +22,12 @@ const Points = () => {
       ]);
       setBalance(balance);
       setHistory(history);
-    } catch {
-      toast.error('Erro ao carregar pontos');
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiResponse<null>>;
+      const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao buscar histórico de pontos';
+      toast.error(message);
     } finally {
       setLoading(false);
     }
