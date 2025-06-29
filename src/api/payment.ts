@@ -7,12 +7,14 @@ export async function getPaymentMethods(): Promise<PaymentMethod[]> {
   return res.data.data!;
 }
 
-export async function createPaymentMethod(data: PaymentMethodRequest): Promise<void> {
-  await api.post('/api/payment-methods', data);
+export async function createPaymentMethod(data: PaymentMethodRequest): Promise<ApiResponse<null>> {
+  const res = await api.post('/api/payment-methods', data);
+  return res.data;
 }
 
-export async function updatePaymentMethod(id: number, data: PaymentMethodRequest): Promise<void> {
-  await api.patch(`/api/payment-methods/${id}`, data);
+export async function updatePaymentMethod(id: number, data: PaymentMethodRequest): Promise<ApiResponse<null>> {
+  const res =await api.patch(`/api/payment-methods/${id}`, data);
+  return res.data;
 }
 
 export async function deletePaymentMethod(id: number): Promise<void> {

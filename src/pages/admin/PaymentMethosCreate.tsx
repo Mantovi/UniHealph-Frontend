@@ -6,6 +6,9 @@ import type { PaymentMethodRequest } from '@/types/payment';
 import PaymentMethodModal from '@/components/PaymentMethodModal';
 import { useRoleGuard } from '@/hooks/useRoleGuard';
 import type { Role } from '@/types/user';
+import { showApiMessage } from '@/utils/showApiMessage';
+import type { ApiResponse } from '@/types/api';
+import type { AxiosError } from 'axios';
 
 const PaymentMethodsCreate = () => {
   const REQUIRED_ROLE: Role = 'ADMIN';
@@ -17,11 +20,17 @@ const PaymentMethodsCreate = () => {
   const handleCreate = async (data: PaymentMethodRequest) => {
     try {
       setLoading(true);
-      await createPaymentMethod(data);
-      toast.success('Método criado com sucesso');
-      navigate('/admin/payment-methods');
-    } catch {
-      toast.error('Erro ao criar método');
+      const response = await createPaymentMethod(data);
+      showApiMessage(response);
+      if (response.success) {
+        navigate('/admin/payment-methods');
+      }
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiResponse<null>>;
+      const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao criar método de pagamento';
+      toast.error(message);
     } finally {
       setLoading(false);
     }

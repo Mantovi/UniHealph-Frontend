@@ -6,6 +6,9 @@ import type { PaymentMethodRequest } from '@/types/payment';
 import PaymentMethodModal from '@/components/PaymentMethodModal';
 import { useRoleGuard } from '@/hooks/useRoleGuard';
 import type { Role } from '@/types/user';
+import { showApiMessage } from '@/utils/showApiMessage';
+import type { AxiosError } from 'axios';
+import type { ApiResponse } from '@/types/api';
 
 const PaymentMethodsUpdate = () => {
   const REQUIRED_ROLE: Role = 'ADMIN';
@@ -38,11 +41,17 @@ const PaymentMethodsUpdate = () => {
   const handleUpdate = async (data: PaymentMethodRequest) => {
     try {
       setLoading(true);
-      await updatePaymentMethod(methodId, data);
-      toast.success('Método atualizado com sucesso');
-      navigate('/admin/payment-methods');
-    } catch {
-      toast.error('Erro ao atualizar método');
+      const response = await updatePaymentMethod(methodId, data);
+      showApiMessage(response);
+      if (response.success) {
+        navigate('/admin/payment-methods');
+      }
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiResponse<null>>;
+      const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao atualizar método de pagamento';
+      toast.error(message);
     } finally {
       setLoading(false);
     }
