@@ -15,6 +15,7 @@ import RelatedProductsSection from '@/components/RelatedProductsSection';
 import type { AxiosError } from 'axios';
 import type { ApiResponse } from '@/types/api';
 import ProductDirectBuyModal from '@/components/ProductDirectBuyModal';
+import { showApiMessage } from '@/utils/showApiMessage';
 
 const Product = () => {
   const { id } = useParams<{ id: string }>();
@@ -51,28 +52,46 @@ const Product = () => {
 
   const isDisabled = !product.active;
 
-const handleBuyNow = async () => {
-  if (!product) return;
-  try {
-    await directPurchase({
-      productId: product.id,
-      quantity,
-      semesterCount: product.saleType === 'ALUGUEL' ? semesterCount : undefined,
-      pointsToUse: pointsToUse
-    });
-    setModalOpen(false);
-    toast.success('Compra realizada com sucesso!');
+  const handleBuyNow = async () => {
+    if (!product) return;
+    try {
+      await directPurchase({
+        productId: product.id,
+        quantity,
+        semesterCount: product.saleType === 'ALUGUEL' ? semesterCount : undefined,
+        pointsToUse: pointsToUse
+      });
+      setModalOpen(false);
+      toast.success('Compra realizada com sucesso!');
 
-    const updatedProduct = await getProductById(Number(id));
-    setProduct(updatedProduct);
-    setPointsToUse(0);
-  } catch (error) {
-    const axiosError = error as AxiosError<ApiResponse<null>>;
-    const message = axiosError.response?.data?.message || 'Erro ao comprar';
-    toast.error(message);
-    setModalOpen(false);
-  }
-};
+      const updatedProduct = await getProductById(Number(id));
+      setProduct(updatedProduct);
+      setPointsToUse(0);
+    } catch (error) {
+      const axiosError = error as AxiosError<ApiResponse<null>>;
+      const message = axiosError.response?.data?.message || 'Erro ao comprar';
+      toast.error(message);
+      setModalOpen(false);
+    }
+  };
+
+  const handleAddToCart = async () => {
+    if (!product) return;
+
+    try {
+      const response = await addToCart({
+        productId: product.id,
+        quantity,
+        semesterCount: product.saleType === 'ALUGUEL' ? semesterCount : undefined,
+      });
+      showApiMessage(response);
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiResponse<null>>;
+      const message = axiosError.response?.data?.message || 'Erro ao adicionar ao carrinho';
+      toast.error(message);
+    }
+  };
+
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
@@ -162,18 +181,7 @@ const handleBuyNow = async () => {
             </Button>
             <Button
               variant="secondary"
-              onClick={async () => {
-                try {
-                  await addToCart({
-                    productId: product.id,
-                    quantity,
-                    semesterCount: product.saleType === 'ALUGUEL' ? semesterCount : undefined,
-                  });
-                  toast.success('Adicionado ao carrinho');
-                } catch {
-                  toast.error('Erro ao adicionar ao carrinho');
-                }
-              }}
+              onClick={handleAddToCart}
               disabled={isDisabled}
             >
               Adicionar ao carrinho
