@@ -3,7 +3,7 @@ import { getPlans, deletePlan } from '@/api/plans';
 import type { Plan } from '@/types/plan';
 import { toast } from 'react-toastify';
 import { Button } from '@/components/ui/button';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useRoleGuard } from '@/hooks/useRoleGuard';
 import type { Role } from '@/types/user';
 
@@ -14,6 +14,7 @@ const Plans = () => {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const loadPlans = async () => {
     setLoading(true);
@@ -47,7 +48,7 @@ const Plans = () => {
     <div className="max-w-4xl mx-auto py-8 px-4 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Planos</h1>
-        <Button onClick={() => navigate('/admin/plans/create')}>+ Novo Plano</Button>
+        <Button onClick={() => navigate('/admin/plans/create', { state: { backgroundLocation: location } })}>+ Novo Plano</Button>
       </div>
 
       {loading ? (
@@ -65,7 +66,7 @@ const Plans = () => {
                   <p className="text-sm text-gray-500">{plan.description}</p>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" onClick={() => navigate(`/admin/plans/update/${plan.id}`)}>Editar</Button>
+                  <Button variant="outline" onClick={() => navigate(`/admin/plans/update/${plan.id}`, { state: { backgroundLocation: location } })}>Editar</Button>
                   <Button variant="destructive" onClick={() => handleDelete(plan.id)}>Excluir</Button>
                 </div>
               </div>

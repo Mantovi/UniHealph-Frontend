@@ -21,7 +21,7 @@ const BrandsCreate = () => {
       setLoading(true);
       const response = await createBrand(data);
       showApiMessage(response)
-      navigate('/admin/brands');
+      navigate(-1);
     } catch {
       toast.error('Erro ao criar marca');
     } finally {
@@ -32,7 +32,7 @@ const BrandsCreate = () => {
   return (
     <BrandModal
       open
-      onClose={() => navigate('/admin/brands')}
+      onClose={() => navigate(-1)}
       onSubmit={handleCreate}
       loading={loading}
     />

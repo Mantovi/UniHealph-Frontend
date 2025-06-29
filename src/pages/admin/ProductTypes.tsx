@@ -3,7 +3,7 @@ import { getProductTypes,  deactivateProductType, activateProductType } from '@/
 import type { ProductType } from '@/types/productType';
 import { Button } from '@/components/ui/button';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useRoleGuard } from '@/hooks/useRoleGuard';
 import type { Role } from '@/types/user';
 
@@ -15,6 +15,7 @@ const ProductTypes = () => {
   const [loading, setLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const loadProductTypes = async () => {
     setLoading(true);
@@ -54,7 +55,7 @@ const ProductTypes = () => {
     <div className="max-w-4xl mx-auto py-8 px-4 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Tipos de Produto</h1>
-        <Button onClick={() => navigate('/admin/product-types/create')}>+ Novo Tipo</Button>
+        <Button onClick={() => navigate('/admin/product-types/create', { state: { backgroundLocation: location } })}>+ Novo Tipo</Button>
       </div>
 
       {loading ? (
@@ -69,7 +70,7 @@ const ProductTypes = () => {
                   Status: {t.active ? 'Ativo' : 'Inativo'} - Produtos: {t.products?.length || 0} </p>
               </div>
               <div className="flex gap-2">
-                <Button variant="outline" onClick={() => navigate(`/admin/product-types/update/${t.id}`)}>Editar</Button>
+                <Button variant="outline" onClick={() => navigate(`/admin/product-types/update/${t.id}`, { state: { backgroundLocation: location } })}>Editar</Button>
                 <Button
                   variant={t.active ? "destructive" : "default"}
                   onClick={() => handleToggleActive(t.id, t.active)}

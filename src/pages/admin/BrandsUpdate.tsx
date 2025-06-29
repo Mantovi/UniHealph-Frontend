@@ -25,7 +25,7 @@ const BrandsUpdate = () => {
         const found = all.find((b) => b.id === brandId);
         if (!found) {
           toast.error('Marca não encontrada');
-          return navigate('/admin/brands');
+          return navigate(-1);
         }
         setInitialData({ name: found.name });
       } catch {
@@ -40,7 +40,7 @@ const BrandsUpdate = () => {
       setLoading(true);
       await updateBrand(brandId, data);
       toast.success('Marca atualizada com sucesso');
-      navigate('/admin/brands');
+      navigate(-1);
     } catch {
       toast.error('Erro ao atualizar marca');
     } finally {
@@ -51,7 +51,7 @@ const BrandsUpdate = () => {
   return (
     <BrandModal
       open
-      onClose={() => navigate('/admin/brands')}
+      onClose={() => navigate(-1)}
       onSubmit={handleUpdate}
       initialData={initialData}
       loading={loading}

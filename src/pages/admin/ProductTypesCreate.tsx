@@ -23,7 +23,7 @@ const ProductTypesCreate = () => {
       const response = await createProductType(data);
       showApiMessage(response)
       if (response.success) {
-        navigate('/admin/product-types');
+        navigate(-1);
       }
     } catch (error: unknown) {
       const axiosError = error as AxiosError<ApiResponse<null>>;
@@ -39,7 +39,7 @@ const ProductTypesCreate = () => {
   return (
     <ProductTypeModal
       open
-      onClose={() => navigate('/admin/product-types')}
+      onClose={() => navigate(-1)}
       onSubmit={handleCreate}
       loading={loading}
     />

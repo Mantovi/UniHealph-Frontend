@@ -27,7 +27,7 @@ const ProductTypesUpdate = () => {
         const found = all.find((t) => t.id === typeId);
         if (!found) {
           toast.error('Tipo de produto não encontrado');
-          return navigate('/admin/product-types');
+          return navigate(-1);
         }
         setInitialData({
           name: found.name,
@@ -46,7 +46,7 @@ const ProductTypesUpdate = () => {
       const response = await updateProductType(typeId, data);
       showApiMessage(response);
       if (response.success) { 
-        navigate('/admin/product-types');
+        navigate(-1);
       }
     } catch (error: unknown) {
       const axiosError = error as AxiosError<ApiResponse<null>>;
@@ -62,7 +62,7 @@ const ProductTypesUpdate = () => {
   return (
     <ProductTypeModal
       open
-      onClose={() => navigate('/admin/product-types')}
+      onClose={() => navigate(-1)}
       onSubmit={handleUpdate}
       initialData={initialData}
       loading={loading}

@@ -83,7 +83,7 @@ const REQUIRED_ROLE: Role = 'ADMIN';
 
       if (response.success) {
         await updateStockQuantity(productId, data.initialStock);
-        navigate('/admin/products');
+        navigate(-1);
       }
 
     } catch (error: unknown) {
@@ -103,7 +103,7 @@ const REQUIRED_ROLE: Role = 'ADMIN';
   return (
     <ProductModal
       open
-      onClose={() => navigate('/admin/products')}
+      onClose={() => navigate(-1)}
       onSubmit={handleUpdate}
       initialData={initialData}
       loading={loading}

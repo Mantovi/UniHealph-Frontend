@@ -23,7 +23,7 @@ const CategoriesCreate = () => {
       const response =await createCategory(data);
       showApiMessage(response)
       if(response.success) { 
-        navigate('/admin/categories');
+        navigate(-1);
       }
     } catch (error: unknown) {
       const axiosError = error as AxiosError<ApiResponse<null>>;
@@ -39,7 +39,7 @@ const CategoriesCreate = () => {
   return (
     <CategoryModal
       open
-      onClose={() => navigate('/admin/categories')}
+      onClose={() => navigate(-1)}
       onSubmit={handleCreate}
       loading={loading}
     />

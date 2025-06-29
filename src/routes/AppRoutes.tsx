@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom"
+import { Route, Routes, useLocation } from "react-router-dom"
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Register from "@/pages/Register";
@@ -44,8 +44,12 @@ import ProductsUpdate from "@/pages/admin/ProductsUpdate";
 import CategoryHierarchy from "@/pages/admin/CategoryHierarchy";
 import StudentRentals from "@/pages/StudentRentals";
 export default function AppRoutes () {
+  const location = useLocation();
+  const state = location.state as {backgroundLocation?: Location};
+
     return (
-    <Routes>
+      <>
+    <Routes location={state?.backgroundLocation || location}>
       <Route element={<PublicLayout/>}>
         <Route path="/" element={<Home/>}/>
         <Route path="/unauthorized" element={<Unauthorized/>}/>
@@ -97,5 +101,27 @@ export default function AppRoutes () {
         <Route path="/admin/rentals" element={<Rentals/>}/>
       </Route>
     </Routes>
+
+     {state?.backgroundLocation && (
+        <Routes>
+          <Route path="/admin/plans/create" element={<PlansCreate />} />
+          <Route path="/admin/plans/update/:id" element={<PlansUpdate />} />
+          <Route path="/admin/payment-methods/create" element={<PaymentMethodsCreate />} />
+          <Route path="/admin/payment-methods/update/:id" element={<PaymentMethodsUpdate />} />
+          <Route path="/admin/brands/create" element={<BrandsCreate />} />
+          <Route path="/admin/brands/update/:id" element={<BrandsUpdate />} />
+          <Route path="/admin/specialties/create" element={<SpecialtiesCreate />} />
+          <Route path="/admin/specialties/update/:id" element={<SpecialtiesUpdate />} />
+          <Route path="/admin/sub-specialties/create" element={<SubSpecialtiesCreate />} />
+          <Route path="/admin/sub-specialties/update/:id" element={<SubSpecialtiesUpdate />} />
+          <Route path="/admin/categories/create" element={<CategoriesCreate />} />
+          <Route path="/admin/categories/update/:id" element={<CategoriesUpdate />} />
+          <Route path="/admin/product-types/create" element={<ProductTypesCreate />} />
+          <Route path="/admin/product-types/update/:id" element={<ProductTypesUpdate />} />
+          <Route path="/admin/products/create" element={<ProductsCreate />} />
+          <Route path="/admin/products/update/:id" element={<ProductsUpdate />} />
+        </Routes>
+      )}  
+      </>
     );
 }

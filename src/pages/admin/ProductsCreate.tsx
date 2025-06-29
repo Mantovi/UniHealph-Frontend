@@ -44,14 +44,14 @@ const ProductsCreate = () => {
       setLoading(true);
       const response = await createProduct(data);
       showApiMessage(response);
-      if (response.success) navigate('/admin/products');
+      if (response.success) navigate(-1);
     } catch (error: unknown) {
-          const axiosError = error as AxiosError<ApiResponse<null>>;
-    const message =
-      axiosError.response?.data?.message ||
-      axiosError.message ||
-      'Erro inesperado';
-    toast.error(message);
+      const axiosError = error as AxiosError<ApiResponse<null>>;
+      const message =
+        axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro inesperado';
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -62,7 +62,7 @@ const ProductsCreate = () => {
   return (
     <ProductModal
       open
-      onClose={() => navigate('/admin/products')}
+      onClose={() => navigate(-1)}
       onSubmit={handleSubmit}
       loading={loading}
       brands={brands}

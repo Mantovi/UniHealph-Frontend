@@ -27,7 +27,7 @@ const CategoriesUpdate = () => {
         const found = all.find((c) => c.id === categoryId);
         if (!found) {
           toast.error('Categoria não encontrada');
-          return navigate('/admin/categories');
+          return navigate(-1);
         }
         setInitialData({
           name: found.name,
@@ -47,7 +47,7 @@ const CategoriesUpdate = () => {
       const response = await updateCategory(categoryId, data);
       showApiMessage(response);
       if (response.success) {
-        navigate('/admin/categories');
+        navigate(-1);
       }
     } catch (error: unknown) {
       const axiosError = error as AxiosError<ApiResponse<null>>;
@@ -63,7 +63,7 @@ const CategoriesUpdate = () => {
   return (
     <CategoryModal
       open
-      onClose={() => navigate('/admin/categories')}
+      onClose={() => navigate(-1)}
       onSubmit={handleUpdate}
       initialData={initialData}
       loading={loading}

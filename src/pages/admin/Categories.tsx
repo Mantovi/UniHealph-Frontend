@@ -3,7 +3,7 @@ import { activateCategory, deactivateCategory, getCategories } from '@/api/categ
 import type { Category } from '@/types/category';
 import { Button } from '@/components/ui/button';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useRoleGuard } from '@/hooks/useRoleGuard';
 import type { Role } from '@/types/user';
 
@@ -15,6 +15,7 @@ const Categories = () => {
   const [loading, setLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const loadCategories = async () => {
     setLoading(true);
@@ -54,7 +55,7 @@ const Categories = () => {
     <div className="max-w-4xl mx-auto py-8 px-4 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Categorias</h1>
-        <Button onClick={() => navigate('/admin/categories/create')}>+ Nova Categoria</Button>
+        <Button onClick={() => navigate('/admin/categories/create', { state: { backgroundLocation: location } })}>+ Nova Categoria</Button>
       </div>
 
       {loading ? (
@@ -70,7 +71,7 @@ const Categories = () => {
                 </p>
               </div>
               <div className="flex gap-2">
-                <Button variant="outline" onClick={() => navigate(`/admin/categories/update/${c.id}`)}>Editar</Button>
+                <Button variant="outline" onClick={() => navigate(`/admin/categories/update/${c.id}`, { state: { backgroundLocation: location } })}>Editar</Button>
                 <Button
                   variant={c.active ? "destructive" : "default"}
                   onClick={() => handleToggleActive(c.id, c.active)}

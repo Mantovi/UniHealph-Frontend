@@ -23,7 +23,7 @@ const PlansCreate = () => {
       const response = await createPlan(data);
       showApiMessage(response)
       if (response.success) {
-        navigate('/admin/plans');
+        navigate(-1);
       }
     } catch (error: unknown) {
       const axiosError = error as AxiosError<ApiResponse<null>>;
@@ -39,7 +39,7 @@ const PlansCreate = () => {
   return (
     <PlanModal
       open
-      onClose={() => navigate('/admin/plans')}
+      onClose={() => navigate(-1)}
       onSubmit={handleCreate}
       loading={loading}
     />

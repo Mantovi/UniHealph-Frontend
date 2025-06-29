@@ -28,7 +28,7 @@ const PaymentMethodsUpdate = () => {
         const found = all.find((m) => m.id === methodId);
         if (!found) {
           toast.error('Método não encontrado');
-          return navigate('/admin/payment-methods');
+          return navigate(-1);
         }
         setInitialData({ type: found.type, description: found.description });
       } catch {
@@ -44,7 +44,7 @@ const PaymentMethodsUpdate = () => {
       const response = await updatePaymentMethod(methodId, data);
       showApiMessage(response);
       if (response.success) {
-        navigate('/admin/payment-methods');
+        navigate(-1);
       }
     } catch (error: unknown) {
       const axiosError = error as AxiosError<ApiResponse<null>>;
@@ -60,7 +60,7 @@ const PaymentMethodsUpdate = () => {
   return (
     <PaymentMethodModal
       open
-      onClose={() => navigate('/admin/payment-methods')}
+      onClose={() => navigate(-1)}
       onSubmit={handleUpdate}
       initialData={initialData}
       loading={loading}

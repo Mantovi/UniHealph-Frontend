@@ -23,7 +23,7 @@ const PaymentMethodsCreate = () => {
       const response = await createPaymentMethod(data);
       showApiMessage(response);
       if (response.success) {
-        navigate('/admin/payment-methods');
+        navigate(-1);
       }
     } catch (error: unknown) {
       const axiosError = error as AxiosError<ApiResponse<null>>;
@@ -39,7 +39,7 @@ const PaymentMethodsCreate = () => {
   return (
     <PaymentMethodModal
       open
-      onClose={() => navigate('/admin/payment-methods')}
+      onClose={() => navigate(-1)}
       onSubmit={handleCreate}
       loading={loading}
     />

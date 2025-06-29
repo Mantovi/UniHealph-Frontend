@@ -23,7 +23,7 @@ const SpecialtiesCreate = () => {
       const response = await createSpecialty(data);
       showApiMessage(response)
       if (response.success) {
-        navigate('/admin/specialties');
+        navigate(-1);
       }
     } catch (error: unknown) {
       const axiosError = error as AxiosError<ApiResponse<null>>;
@@ -39,7 +39,7 @@ const SpecialtiesCreate = () => {
   return (
     <SpecialtyModal
       open
-      onClose={() => navigate('/admin/specialties')}
+      onClose={() => navigate(-1)}
       onSubmit={handleCreate}
       loading={loading}
     />

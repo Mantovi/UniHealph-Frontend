@@ -28,7 +28,7 @@ const SpecialtiesUpdate = () => {
         const found = all.find((s) => s.id === specialtyId);
         if (!found) {
           toast.error('Especialidade não encontrada');
-          return navigate('/admin/specialties');
+          return navigate(-1);
         }
         setInitialData({
           name: found.name,
@@ -48,7 +48,7 @@ const SpecialtiesUpdate = () => {
       const response =await updateSpecialty(specialtyId, data);
       showApiMessage(response);
       if (response.success) {
-        navigate('/admin/specialties');
+        navigate(-1);
       }
     } catch (error: unknown) {
       const axiosError = error as AxiosError<ApiResponse<null>>;
@@ -64,7 +64,7 @@ const SpecialtiesUpdate = () => {
   return (
     <SpecialtyModal
       open
-      onClose={() => navigate('/admin/specialties')}
+      onClose={() => navigate(-1)}
       onSubmit={handleUpdate}
       initialData={initialData}
       loading={loading}

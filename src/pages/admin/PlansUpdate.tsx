@@ -1,114 +1,82 @@
-import { useEffect, useState } from 'react';
-import { getProductById, updateProduct, getAllBrands } from '@/api/products';
-import { getProductTypes } from '@/api/productType';
-import { useParams, useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import type { ProductFormValues } from '@/components/ProductModal';
-import ProductModal from '@/components/ProductModal';
-import { useRoleGuard } from '@/hooks/useRoleGuard';
-import type { Role } from '@/types/user';
-import type { Brand } from '@/types/brand';
-import type { ProductType } from '@/types/productType';
-import type { ProductUpdate } from '@/types/product';
-import { showApiMessage } from '@/utils/showApiMessage';
-import type { AxiosError } from 'axios';
-import type { ApiResponse } from '@/types/api';
+import { useEffect, useState } from "react";
+import { getPlans, updatePlan } from "@/api/plans";
+import { useParams, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import type { PlanRequest } from "@/types/plan";
+import PlanModal from "@/components/PlanModal";
+import { useRoleGuard } from "@/hooks/useRoleGuard";
+import type { Role } from "@/types/user";
+import { showApiMessage } from "@/utils/showApiMessage";
+import type { AxiosError } from "axios";
+import type { ApiResponse } from "@/types/api";
 
-const ProductsUpdate = () => {
-  const REQUIRED_ROLE: Role = 'ADMIN';
+const PlansUpdate = () => {
+  const REQUIRED_ROLE: Role = "ADMIN";
   useRoleGuard(REQUIRED_ROLE);
 
-  const { id } = useParams();
-  const productId = Number(id);
+  const { id } = useParams<{ id: string }>();
+  const planId = Number(id);
   const navigate = useNavigate();
 
-  const [initialData, setInitialData] = useState<ProductFormValues | null>(null);
+  const [initialData, setInitialData] = useState<PlanRequest | null>(null);
   const [loading, setLoading] = useState(false);
-  const [brands, setBrands] = useState<Brand[]>([]);
-  const [productTypes, setProductTypes] = useState<ProductType[]>([]);
-  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const load = async () => {
       try {
-        const [product, b, t] = await Promise.all([
-          getProductById(productId),
-          getAllBrands(),
-          getProductTypes(),
-        ]);
-
-        setBrands(b);
-        setProductTypes(t);
-
+        const plans = await getPlans();
+        const found = plans.find((plan) => plan.id === planId);
+        if (!found) {
+          toast.error("Plano não encontrado");
+          navigate("/admin/plans");
+          return;
+        }
         setInitialData({
-          name: product.name,
-          description: product.description,
-          price: product.price,
-          stockThreshold: product.stockThreshold,
-          saleType: product.saleType,
-          brandId: b.find((br) => br.name === product.brandName)?.id ?? b[0].id,
-          productTypeId: t.find((pt) => pt.name === product.productTypeName)?.id ?? t[0].id,
-          initialStock: product.availableStock,
-          imageUrls: product.imageUrls,
+          name: found.name,
+          maxStudents: found.maxStudents,
+          priceMonthly: found.priceMonthly,
+          priceYearly: found.priceYearly,
+          description: found.description,
         });
-
-        setReady(true);
       } catch {
-        toast.error('Erro ao carregar produto');
-        navigate('/admin/products');
+        toast.error("Erro ao carregar plano");
+        navigate("/admin/plans");
       }
     };
     load();
-  }, [productId, navigate]);
+  }, [planId, navigate]);
 
-  const handleUpdate = async (data: ProductFormValues) => {
+  const handleUpdate = async (data: PlanRequest) => {
     try {
       setLoading(true);
-
-      const updatePayload: ProductUpdate = {
-        name: data.name,
-        description: data.description,
-        price: data.price,
-        stockThreshold: data.stockThreshold,
-        saleType: data.saleType,
-        brandId: data.brandId,
-        productTypeId: data.productTypeId,
-        productTypeName: productTypes.find((pt) => pt.id === data.productTypeId)?.name ?? '',
-        active: true,
-        imageUrls: data.imageUrls,
-      };
-
-      const response = await updateProduct(productId, updatePayload);
-      showApiMessage(response);
-
+      const response = await updatePlan(planId, data);
+      showApiMessage(response, { successMessage: "Plano atualizado com sucesso" });
       if (response.success) {
-        navigate('/admin/products');
+        navigate(-1);
       }
     } catch (error: unknown) {
       const axiosError = error as AxiosError<ApiResponse<null>>;
       const message =
         axiosError.response?.data?.message ||
         axiosError.message ||
-        'Erro ao atualizar produto';
+        "Erro ao atualizar plano";
       toast.error(message);
     } finally {
       setLoading(false);
     }
   };
 
-  if (!ready || !initialData) return null;
+  if (!initialData) return null;
 
   return (
-    <ProductModal
+    <PlanModal
       open
-      onClose={() => navigate('/admin/products')}
+      onClose={() => navigate(-1)}
       onSubmit={handleUpdate}
       initialData={initialData}
       loading={loading}
-      brands={brands}
-      productTypes={productTypes}
     />
   );
 };
 
-export default ProductsUpdate;
+export default PlansUpdate;

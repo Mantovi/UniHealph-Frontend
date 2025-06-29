@@ -3,7 +3,7 @@ import { getBrands, deleteBrand } from '@/api/brands';
 import type { Brand } from '@/types/brand';
 import { Button } from '@/components/ui/button';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useRoleGuard } from '@/hooks/useRoleGuard';
 import type { Role } from '@/types/user';
 
@@ -14,6 +14,7 @@ const Brands = () => {
   const [brands, setBrands] = useState<Brand[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const loadBrands = async () => {
     setLoading(true);
@@ -46,7 +47,7 @@ const Brands = () => {
     <div className="max-w-4xl mx-auto py-8 px-4 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Marcas</h1>
-        <Button onClick={() => navigate('/admin/brands/create')}>+ Nova Marca</Button>
+        <Button onClick={() => navigate('/admin/brands/create', { state: { backgroundLocation: location } })}>+ Nova Marca</Button>
       </div>
 
       {loading ? (
@@ -57,7 +58,7 @@ const Brands = () => {
             <div key={brand.id} className="border rounded p-4 bg-white shadow flex justify-between items-center">
               <span className="text-lg font-medium">{brand.name}</span>
               <div className="flex gap-2">
-                <Button variant="outline" onClick={() => navigate(`/admin/brands/update/${brand.id}`)}>
+                <Button variant="outline" onClick={() => navigate(`/admin/brands/update/${brand.id}`, { state: { backgroundLocation: location } })}>
                   Editar
                 </Button>
                 <Button variant="destructive" onClick={() => handleDelete(brand.id)}>

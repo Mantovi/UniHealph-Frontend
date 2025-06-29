@@ -28,7 +28,7 @@ export default function SubSpecialtiesUpdate () {
         const found = all.find((s) => s.id === subId);
         if (!found) {
           toast.error('Subespecialidade não encontrada');
-          return navigate('/admin/sub-specialties');
+          return navigate(-1);
         }
         setInitialData({ name: found.name, active: found.active, categories: found.categories ?? [] });
       } catch {
@@ -44,7 +44,7 @@ export default function SubSpecialtiesUpdate () {
       const response = await updateSubSpecialty(subId, data);
       showApiMessage(response);
       if (response.success) {
-        navigate('/admin/sub-specialties');
+        navigate(-1);
       }
     } catch (error: unknown) {
       const axiosError = error as AxiosError<ApiResponse<null>>;
@@ -60,7 +60,7 @@ export default function SubSpecialtiesUpdate () {
   return (
     <SubSpecialtyModal
       open
-      onClose={() => navigate('/admin/sub-specialties')}
+      onClose={() => navigate(-1)}
       onSubmit={handleUpdate}
       initialData={initialData}
       loading={loading}

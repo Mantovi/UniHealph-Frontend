@@ -3,7 +3,7 @@ import { activateSubSpecialty, deactivateSubSpecialty, getSubSpecialties } from 
 import type { SubSpecialty } from '@/types/subspecialty';
 import { Button } from '@/components/ui/button';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useRoleGuard } from '@/hooks/useRoleGuard';
 import type { Role } from '@/types/user';
 
@@ -15,6 +15,7 @@ const SubSpecialties = () => {
   const [loading, setLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const loadSubSpecialties = async () => {
     setLoading(true);
@@ -54,7 +55,7 @@ const SubSpecialties = () => {
     <div className="max-w-4xl mx-auto py-8 px-4 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Subespecialidades</h1>
-        <Button onClick={() => navigate('/admin/sub-specialties/create')}>+ Nova</Button>
+        <Button onClick={() => navigate('/admin/sub-specialties/create', { state: { backgroundLocation: location } })}>+ Nova</Button>
       </div>
 
       {loading ? (
@@ -70,7 +71,7 @@ const SubSpecialties = () => {
                 </p>
               </div>
               <div className="flex gap-2">
-                <Button variant="outline" onClick={() => navigate(`/admin/sub-specialties/update/${s.id}`)}>
+                <Button variant="outline" onClick={() => navigate(`/admin/sub-specialties/update/${s.id}`, { state: { backgroundLocation: location } })}>
                   Editar
                 </Button>
                 <Button

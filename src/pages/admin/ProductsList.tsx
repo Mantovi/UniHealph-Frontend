@@ -3,7 +3,7 @@ import { activateProduct, deactivateProduct, getAllProducts } from '@/api/produc
 import type { ProductResponse } from '@/types/product';
 import { Button } from '@/components/ui/button';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useRoleGuard } from '@/hooks/useRoleGuard';
 import type { Role } from '@/types/user';
 
@@ -15,6 +15,7 @@ const ProductsList = () => {
   const [loading, setLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const loadProducts = async () => {
     setLoading(true);
@@ -54,7 +55,7 @@ const ProductsList = () => {
     <div className="max-w-5xl mx-auto py-8 px-4 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Produtos</h1>
-        <Button onClick={() => navigate('/admin/products/create')}>+ Novo Produto</Button>
+        <Button onClick={() => navigate('/admin/products/create', { state: { backgroundLocation: location } })}>+ Novo Produto</Button>
       </div>
 
       {loading ? (
@@ -70,7 +71,7 @@ const ProductsList = () => {
                 </p>
               </div>
               <div className="flex gap-2">
-                <Button variant="outline" onClick={() => navigate(`/admin/products/update/${p.id}`)}>
+                <Button variant="outline" onClick={() => navigate(`/admin/products/update/${p.id}`, { state: { backgroundLocation: location } })}>
                   Editar
                 </Button>
                 <Button

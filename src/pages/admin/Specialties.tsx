@@ -3,7 +3,7 @@ import { activateSpecialty, deactivateSpecialty, getSpecialties } from '@/api/sp
 import type { Specialty } from '@/types/specialty';
 import { Button } from '@/components/ui/button';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useRoleGuard } from '@/hooks/useRoleGuard';
 import type { Role } from '@/types/user';
 
@@ -15,6 +15,7 @@ const Specialties = () => {
   const [loading, setLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const loadSpecialties = async () => {
     setLoading(true);
@@ -54,7 +55,7 @@ const Specialties = () => {
     <div className="max-w-4xl mx-auto py-8 px-4 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Especialidades</h1>
-        <Button onClick={() => navigate('/admin/specialties/create')}>
+        <Button onClick={() => navigate('/admin/specialties/create', { state: { backgroundLocation: location } })}>
           + Nova Especialidade
         </Button>
       </div>
@@ -74,7 +75,7 @@ const Specialties = () => {
               <div className="flex gap-2">
                 <Button
                   variant="outline"
-                  onClick={() => navigate(`/admin/specialties/update/${item.id}`)}
+                  onClick={() => navigate(`/admin/specialties/update/${item.id}`, { state: { backgroundLocation: location } })}
                 >
                   Editar
                 </Button>

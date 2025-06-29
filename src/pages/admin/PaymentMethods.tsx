@@ -3,7 +3,7 @@ import { getPaymentMethods, deletePaymentMethod } from '@/api/payment';
 import type { PaymentMethod } from '@/types/payment';
 import { toast } from 'react-toastify';
 import { Button } from '@/components/ui/button';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useRoleGuard } from '@/hooks/useRoleGuard';
 import type { Role } from '@/types/user';
 
@@ -14,6 +14,7 @@ const PaymentMethods = () => {
   const [methods, setMethods] = useState<PaymentMethod[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const loadMethods = async () => {
     setLoading(true);
@@ -46,7 +47,7 @@ const PaymentMethods = () => {
     <div className="max-w-4xl mx-auto py-8 px-4 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Métodos de Pagamento</h1>
-        <Button onClick={() => navigate('/admin/payment-methods/create')}>+ Novo Método</Button>
+        <Button onClick={() => navigate('/admin/payment-methods/create', { state: { backgroundLocation: location } })}>+ Novo Método</Button>
       </div>
 
       {loading ? (
@@ -61,7 +62,7 @@ const PaymentMethods = () => {
                   <p className="text-sm text-gray-600">{method.description}</p>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" onClick={() => navigate(`/admin/payment-methods/update/${method.id}`)}>
+                  <Button variant="outline" onClick={() => navigate(`/admin/payment-methods/update/${method.id}`, { state: { backgroundLocation: location } })}>
                     Editar
                   </Button>
                   <Button variant="destructive" onClick={() => handleDelete(method.id)}>
