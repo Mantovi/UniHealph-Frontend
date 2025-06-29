@@ -1,5 +1,3 @@
-// src/api/auth.ts
-
 import api from './axios';
 import type { LoginRequest, RegisterRequest, AuthResponse } from '@/types/auth';
 import type { ApiResponse } from '@/types/api';
@@ -14,6 +12,5 @@ export async function login(data: LoginRequest): Promise<AuthResponse> {
 
 export async function register(data: RegisterRequest): Promise<ApiResponse<null>> {
   const res = await api.post<ApiResponse<null>>('/auth/register', data);
-  // Retorne a resposta completa para a página poder pegar o message
   return res.data;
 }

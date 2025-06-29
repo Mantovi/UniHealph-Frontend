@@ -100,7 +100,7 @@ const Cart = () => {
     try {
       const response = await removeCartItem(productId);
       showApiMessage(response, { successMessage: 'Item removido!', errorMessage: 'Erro ao remover item' });
-      if (!response.success) {
+      if (response.success) {
         fetchCart();
       }
     } catch (error: unknown) {

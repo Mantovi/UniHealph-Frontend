@@ -47,7 +47,7 @@ const SpecialtiesUpdate = () => {
       setLoading(true);
       const response =await updateSpecialty(specialtyId, data);
       showApiMessage(response);
-      if (!response.success) {
+      if (response.success) {
         navigate('/admin/specialties');
       }
     } catch (error: unknown) {

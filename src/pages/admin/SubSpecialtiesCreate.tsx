@@ -22,7 +22,7 @@ const SubSpecialtiesCreate = () => {
       setLoading(true);
       const response = await createSubSpecialty(data);
       showApiMessage(response)
-      if (!response.success) {
+      if (response.success) {
         navigate('/admin/sub-specialties');
       }
     } catch (error: unknown) {

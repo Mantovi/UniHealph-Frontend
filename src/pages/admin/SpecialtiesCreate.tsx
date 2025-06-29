@@ -22,7 +22,7 @@ const SpecialtiesCreate = () => {
       setLoading(true);
       const response = await createSpecialty(data);
       showApiMessage(response)
-      if (!response.success) {
+      if (response.success) {
         navigate('/admin/specialties');
       }
     } catch (error: unknown) {

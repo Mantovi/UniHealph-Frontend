@@ -43,7 +43,7 @@ export default function SubSpecialtiesUpdate () {
       setLoading(true);
       const response = await updateSubSpecialty(subId, data);
       showApiMessage(response);
-      if (!response.success) {
+      if (response.success) {
         navigate('/admin/sub-specialties');
       }
     } catch (error: unknown) {

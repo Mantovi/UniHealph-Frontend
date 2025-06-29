@@ -81,7 +81,7 @@ const REQUIRED_ROLE: Role = 'ADMIN';
       const response = await updateProduct(productId, updatePayload);
       showApiMessage(response);
 
-      if (!response.success) {
+      if (response.success) {
         await updateStockQuantity(productId, data.initialStock);
         navigate('/admin/products');
       }

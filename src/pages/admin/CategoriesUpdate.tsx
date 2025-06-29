@@ -46,7 +46,7 @@ const CategoriesUpdate = () => {
       setLoading(true);
       const response = await updateCategory(categoryId, data);
       showApiMessage(response);
-      if (!response.success) {
+      if (response.success) {
         navigate('/admin/categories');
       }
     } catch (error: unknown) {

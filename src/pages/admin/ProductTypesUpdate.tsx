@@ -45,7 +45,7 @@ const ProductTypesUpdate = () => {
       setLoading(true);
       const response = await updateProductType(typeId, data);
       showApiMessage(response);
-      if (!response.success) { 
+      if (response.success) { 
         navigate('/admin/product-types');
       }
     } catch (error: unknown) {
