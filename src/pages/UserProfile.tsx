@@ -24,6 +24,7 @@ import type { Plan } from '@/types/plan';
 import type { PaymentMethod } from '@/types/payment';
 import { getPlans } from '@/api/plans';
 import { getPaymentMethods } from '@/api/payment';
+import { showApiMessage } from '@/utils/showApiMessage';
 
 const schema = z.object({
   name: z.string().min(3, 'Nome é obrigatório'),
@@ -142,10 +143,14 @@ const onSubmit = async (data: FormData) => {
     if (!user?.universityId || !planId) return;
     try {
       setLoading(true);
-      await changePlan(user.universityId, Number(planId));
-      toast.success('Plano alterado com sucesso');
-    } catch {
-      toast.error('Erro ao alterar plano');
+      const response = await changePlan(user.universityId, Number(planId));
+      showApiMessage(response);
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiResponse<null>>;
+      const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao alterar plano';
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -155,10 +160,14 @@ const onSubmit = async (data: FormData) => {
     if (!user?.universityId || !paymentMethodId) return;
     try {
       setLoading(true);
-      await changePaymentMethod(user.universityId, Number(paymentMethodId));
-      toast.success('Método de pagamento alterado');
-    } catch {
-      toast.error('Erro ao alterar pagamento');
+      const response = await changePaymentMethod(user.universityId, Number(paymentMethodId));
+      showApiMessage(response);
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiResponse<null>>;
+      const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao alterar plano';
+      toast.error(message);
     } finally {
       setLoading(false);
     }
