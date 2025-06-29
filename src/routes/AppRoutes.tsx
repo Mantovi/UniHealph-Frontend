@@ -43,6 +43,7 @@ import ProductsCreate from "@/pages/admin/ProductsCreate";
 import ProductsUpdate from "@/pages/admin/ProductsUpdate";
 import CategoryHierarchy from "@/pages/admin/CategoryHierarchy";
 import StudentRentals from "@/pages/StudentRentals";
+import StockManagement from "@/pages/admin/StockManagement";
 export default function AppRoutes () {
   const location = useLocation();
   const state = location.state as {backgroundLocation?: Location};
@@ -99,6 +100,7 @@ export default function AppRoutes () {
         <Route path="/admin/products/create" element={<ProductsCreate/>}/>
         <Route path="/admin/products/update/:id" element={<ProductsUpdate/>}/>
         <Route path="/admin/rentals" element={<Rentals/>}/>
+        <Route path="/admin/stock" element={<StockManagement/>}/>
       </Route>
     </Routes>
 

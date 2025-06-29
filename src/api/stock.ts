@@ -9,3 +9,8 @@ export async function updateStockQuantity(productId: number, newQuantity: number
 
   return res.data;
 }
+
+export async function updateStockThreshold(productId: number, stockThreshold: number) {
+  const res = await api.patch(`/api/products/${productId}/stock-threshold`, { stockThreshold });
+  return res.data;
+}

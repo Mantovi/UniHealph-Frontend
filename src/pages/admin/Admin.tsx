@@ -21,6 +21,7 @@ const Admin = () => {
     { label: 'Tipos de Produto', path: '/admin/product-types' },
     { label: 'Hierarquia de Categorias', path: '/admin/category-hierarchy' },
     { label: 'Produtos', path: '/admin/products' },
+    { label: 'Gerenciar Estoque', path: '/admin/stock' },
   ];
 
   return (
