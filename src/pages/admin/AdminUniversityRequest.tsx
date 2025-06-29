@@ -9,6 +9,9 @@ import type { PendingUniversityRequestResponse } from '@/types/university-reques
 import { toast } from 'react-toastify';
 import { Button } from '@/components/ui/button';
 import type { Role } from '@/types/user';
+import { showApiMessage } from '@/utils/showApiMessage';
+import type { AxiosError } from 'axios';
+import type { ApiResponse } from '@/types/api';
 const AdminUniversityRequest = () => {
     const REQUIRED_ROLE: Role = 'ADMIN';
     useRoleGuard(REQUIRED_ROLE);
@@ -33,11 +36,15 @@ const AdminUniversityRequest = () => {
   const handleApprove = async (id: number) => {
     try {
       setLoadingId(id);
-      await approveRequest(id);
-      toast.success('Solicitação aprovada');
-      await loadRequests();
-    } catch {
-      toast.error('Erro ao aprovar solicitação');
+      const response = await approveRequest(id);
+      showApiMessage(response);
+      if (response.success) {
+        await loadRequests();
+      }
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiResponse<null>>;
+      const message = axiosError.response?.data?.message || axiosError.message || 'Erro ao aprovar solicitação';
+      toast.error(message);
     } finally {
       setLoadingId(null);
     }
@@ -46,11 +53,15 @@ const AdminUniversityRequest = () => {
   const handleReject = async (id: number) => {
     try {
       setLoadingId(id);
-      await rejectRequest(id);
-      toast.success('Solicitação recusada');
-      await loadRequests();
-    } catch {
-      toast.error('Erro ao recusar solicitação');
+      const response = await rejectRequest(id);
+      showApiMessage(response);
+      if (response.success) {
+        await loadRequests();
+      }
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiResponse<null>>;
+      const message = axiosError.response?.data?.message || axiosError.message || 'Erro ao recusar solicitação';
+      toast.error(message);
     } finally {
       setLoadingId(null);
     }

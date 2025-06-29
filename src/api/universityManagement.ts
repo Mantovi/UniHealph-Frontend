@@ -1,27 +1,23 @@
 import api from './axios';
 import type { ApiResponse } from '@/types/api';
 
-export async function changePlan(universityId: number, newPlanId: number): Promise<void> {
+export async function changePlan(universityId: number, newPlanId: number): Promise<ApiResponse<null>> {
   const res = await api.put<ApiResponse<null>>(
     `/api/university/university-management/${universityId}/change-plan?newPlanId=${newPlanId}`
   );
 
-  if (!res.data.success) {
-    throw new Error(res.data.message ?? 'Erro ao alterar plano');
-  }
+  return res.data;
 }
 
 export async function changePaymentMethod(
   universityId: number,
   newPaymentMethodId: number
-): Promise<void> {
+): Promise<ApiResponse<null>> {
   const res = await api.put<ApiResponse<null>>(
     `/api/university/university-management/${universityId}/change-payment-method?newPaymentMethodId=${newPaymentMethodId}`
   );
 
-  if (!res.data.success) {
-    throw new Error(res.data.message ?? 'Erro ao alterar forma de pagamento');
-  }
+  return res.data;
 }
 
 export async function cancelUniversityAccess(universityId: number): Promise<void> {

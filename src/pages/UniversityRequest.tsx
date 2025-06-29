@@ -8,6 +8,9 @@ import { toast } from 'react-toastify';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { showApiMessage } from '@/utils/showApiMessage';
+import type { AxiosError } from 'axios';
+import type { ApiResponse } from '@/types/api';
 
 const schema = z.object({
   name: z.string().min(3, 'Nome da universidade é obrigatório'),
@@ -37,12 +40,15 @@ const navigate = useNavigate();
 
   const onSubmit = async (data: PendingUniversityRequest): Promise<void> => {
     try {
-      await requestAccess(data);
-      toast.success('Solicitação enviada com sucesso');
-      navigate('/login');
-    } catch (error) {
-      console.error(error);
-      toast.error('Erro ao enviar solicitação. Verifique os dados ou tente novamente.');
+      const response = await requestAccess(data);
+      showApiMessage(response);
+      if (response.success){
+        navigate('/login');
+      }
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiResponse<null>>;
+      const message = axiosError.response?.data?.message || axiosError.message || 'Erro ao solicitar acesso para universidade';
+      toast.error(message);
     }
   };
 

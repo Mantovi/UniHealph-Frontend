@@ -5,8 +5,9 @@ import type {
 } from '@/types/university-request';
 import type { ApiResponse } from '@/types/api';
 
-export async function requestAccess(data: PendingUniversityRequest): Promise<void> {
-  await api.post<ApiResponse<null>>('/api/public/universities/request', data);
+export async function requestAccess(data: PendingUniversityRequest): Promise<ApiResponse<null>> {
+  const res = await api.post<ApiResponse<null>>('/api/public/universities/request', data);
+  return res.data;
 }
 
 export async function getAllUniversityRequests(): Promise<PendingUniversityRequestResponse[]> {
@@ -16,14 +17,14 @@ export async function getAllUniversityRequests(): Promise<PendingUniversityReque
   return res.data.data ?? [];
 }
 
-export async function approveRequest(id: number): Promise<string> {
+export async function approveRequest(id: number): Promise<ApiResponse<string | null>> {
   const res = await api.post<ApiResponse<string | null>>
   (`/api/admin/university-requests/${id}/approve`);
-  return res.data.data ?? 'Solicitaçõa aprovada';
+  return res.data;
 }
 
-export async function rejectRequest(id: number): Promise<string> {
+export async function rejectRequest(id: number): Promise<ApiResponse<string | null>> {
   const res = await api.post<ApiResponse<string | null>>
   (`/api/admin/university-requests/${id}/reject`);
-  return res.data.data ?? 'Solicitação rejeitada';
+  return res.data;
 }
