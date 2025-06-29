@@ -10,6 +10,9 @@ import type { Role } from '@/types/user';
 import type { Brand } from '@/types/brand';
 import type { ProductType } from '@/types/productType';
 import type { ProductUpdate } from '@/types/product';
+import { showApiMessage } from '@/utils/showApiMessage';
+import type { AxiosError } from 'axios';
+import type { ApiResponse } from '@/types/api';
 
 const ProductsUpdate = () => {
   const REQUIRED_ROLE: Role = 'ADMIN';
@@ -75,11 +78,19 @@ const ProductsUpdate = () => {
         imageUrls: data.imageUrls,
       };
 
-      await updateProduct(productId, updatePayload);
-      toast.success('Produto atualizado');
-      navigate('/admin/products');
-    } catch {
-      toast.error('Erro ao atualizar produto');
+      const response = await updateProduct(productId, updatePayload);
+      showApiMessage(response);
+
+      if (response.success) {
+        navigate('/admin/products');
+      }
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiResponse<null>>;
+      const message =
+        axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao atualizar produto';
+      toast.error(message);
     } finally {
       setLoading(false);
     }
