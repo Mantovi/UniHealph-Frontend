@@ -53,8 +53,12 @@ const REQUIRED_ROLE: Role = 'ADMIN';
         setBrands(b);
         setProductTypes(t);
         setReady(true);
-      } catch {
-        toast.error('Erro ao carregar produto');
+      } catch (error: unknown) {
+        const axiosError = error as AxiosError<ApiResponse<null>>;
+        const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao carregar produtos';
+        toast.error(message);
         navigate('/admin/products');
       }
     };

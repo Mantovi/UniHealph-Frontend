@@ -34,8 +34,12 @@ const CategoriesUpdate = () => {
           active: found.active,
           productTypes: found.productTypes ?? [],
         });
-      } catch {
-        toast.error('Erro ao carregar categoria');
+      } catch (error: unknown) {
+        const axiosError = error as AxiosError<ApiResponse<null>>;
+        const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao carregar categorias';
+        toast.error(message);
       }
     };
     load();

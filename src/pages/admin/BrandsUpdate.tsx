@@ -6,6 +6,8 @@ import type { BrandRequest } from '@/types/brand';
 import BrandModal from '@/components/BrandModal';
 import { useRoleGuard } from '@/hooks/useRoleGuard';
 import type { Role } from '@/types/user';
+import type { AxiosError } from 'axios';
+import type { ApiResponse } from '@/types/api';
 
 const BrandsUpdate = () => {
   const REQUIRED_ROLE: Role = 'ADMIN';
@@ -27,8 +29,12 @@ const BrandsUpdate = () => {
           return navigate(-1);
         }
         setInitialData({ name: found.name });
-      } catch {
-        toast.error('Erro ao carregar marca');
+      } catch (error: unknown) {
+        const axiosError = error as AxiosError<ApiResponse<null>>;
+        const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao carregar marcas';
+        toast.error(message);
       }
     };
     load();
@@ -40,8 +46,12 @@ const BrandsUpdate = () => {
       await updateBrand(brandId, data);
       toast.success('Marca atualizada com sucesso');
       navigate(-1);
-    } catch {
-      toast.error('Erro ao atualizar marca');
+    } catch (error: unknown) {
+        const axiosError = error as AxiosError<ApiResponse<null>>;
+        const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao atualizar marca';
+        toast.error(message);
     } finally {
       setLoading(false);
     }

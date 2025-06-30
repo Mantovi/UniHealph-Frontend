@@ -54,8 +54,12 @@ const Cart = () => {
           .map(i => i.productId)
       );
       setPoints(pointBalance.points);
-    } catch {
-      toast.error('Erro ao carregar carrinho');
+    } catch (error: unknown) {
+        const axiosError = error as AxiosError<ApiResponse<null>>;
+        const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao carregar carrinho';
+        toast.error(message);
     }
   };
 

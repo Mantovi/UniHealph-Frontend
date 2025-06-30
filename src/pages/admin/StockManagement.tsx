@@ -7,6 +7,8 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'react-toastify';
 import { useRoleGuard } from '@/hooks/useRoleGuard';
 import type { Role } from '@/types/user';
+import type { AxiosError } from 'axios';
+import type { ApiResponse } from '@/types/api';
 
 const StockManagement = () => {
   const REQUIRED_ROLE: Role = 'ADMIN';
@@ -29,8 +31,12 @@ const StockManagement = () => {
     try {
       const data = await getAllProducts();
       setProducts(data);
-    } catch {
-      toast.error('Erro ao carregar produtos');
+    } catch (error: unknown) {
+        const axiosError = error as AxiosError<ApiResponse<null>>;
+        const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao carregar produtos';
+        toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -65,8 +71,12 @@ const StockManagement = () => {
       toast.success('Estoque e limite atualizados!');
       handleCancel();
       loadProducts();
-    } catch {
-      toast.error('Erro ao atualizar dados');
+    } catch (error: unknown) {
+        const axiosError = error as AxiosError<ApiResponse<null>>;
+        const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao atualizar estoque';
+        toast.error(message);
     }
   };
 

@@ -7,6 +7,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useRoleGuard } from '@/hooks/useRoleGuard';
 import type { Role } from '@/types/user';
 import { sortByAlpha } from '@/utils/sort';
+import type { AxiosError } from 'axios';
+import type { ApiResponse } from '@/types/api';
 
 const Plans = () => {
   const REQUIRED_ROLE: Role = 'ADMIN';
@@ -22,8 +24,12 @@ const Plans = () => {
     try {
       const data = await getPlans();
       setPlans(sortByAlpha(data, 'name'));
-    } catch {
-      toast.error('Erro ao carregar planos');
+    } catch (error: unknown) {
+        const axiosError = error as AxiosError<ApiResponse<null>>;
+        const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao carregar planos';
+        toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -35,8 +41,12 @@ const Plans = () => {
       await deletePlan(id);
       toast.success('Plano excluído com sucesso');
       loadPlans();
-    } catch {
-      toast.error('Erro ao excluir plano');
+    } catch (error: unknown) {
+        const axiosError = error as AxiosError<ApiResponse<null>>;
+        const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao excluir plano';
+        toast.error(message);
     }
   };
 

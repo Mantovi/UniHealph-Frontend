@@ -10,6 +10,8 @@ import CategoryTreeFilter from '@/components/CategoryTreeFilter';
 import ProductBrandFilter from '@/components/ProductBrandFilter';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
+import type { AxiosError } from 'axios';
+import type { ApiResponse } from '@/types/api';
 
 const Products = () => {
   const [products, setProducts] = useState<ProductResponse[]>([]);
@@ -68,9 +70,13 @@ const Products = () => {
       if (requestId === lastRequestId.current) {
         setProducts(data);
       }
-    } catch {
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiResponse<null>>;
+      const message = axiosError.response?.data?.message ||
+      axiosError.message ||
+      'Erro ao carregar produtos';
       if (requestId === lastRequestId.current) {
-        toast.error('Erro ao buscar produtos');
+        toast.error(message);
       }
     }
   }, [searchParams, saleTypes, sortBy, direction, selectedProductTypes, selectedBrandIds]);
@@ -132,8 +138,12 @@ const Products = () => {
         semesterCount: product.saleType === 'ALUGUEL' ? 1 : undefined,
       });
       toast.success('Adicionado ao carrinho');
-    } catch {
-      toast.error('Erro ao adicionar ao carrinho');
+    } catch (error: unknown) {
+        const axiosError = error as AxiosError<ApiResponse<null>>;
+        const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao adicionar ao carrinho';
+        toast.error(message);
     }
   };
 

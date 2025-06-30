@@ -7,6 +7,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useRoleGuard } from '@/hooks/useRoleGuard';
 import type { Role } from '@/types/user';
 import { sortByAlpha } from '@/utils/sort';
+import type { AxiosError } from 'axios';
+import type { ApiResponse } from '@/types/api';
 
 const ProductsList = () => {
   const REQUIRED_ROLE: Role = 'ADMIN';
@@ -23,8 +25,12 @@ const ProductsList = () => {
     try {
       const data = await getAllProducts();
       setProducts(sortByAlpha(data ?? [], 'name'));
-    } catch {
-      toast.error('Erro ao carregar produtos');
+    } catch (error: unknown) {
+        const axiosError = error as AxiosError<ApiResponse<null>>;
+        const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao carregar produtos';
+        toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -41,8 +47,12 @@ const ProductsList = () => {
         toast.success('Produto ativado');
       }
       loadProducts();
-    } catch {
-      toast.error('Erro ao atualizar status');
+    } catch (error: unknown) {
+        const axiosError = error as AxiosError<ApiResponse<null>>;
+        const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao ativar/desativar produto';
+        toast.error(message);
     } finally {
       setActionLoadingId(null);
     }

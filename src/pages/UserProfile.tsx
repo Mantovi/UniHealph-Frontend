@@ -184,8 +184,12 @@ const UserProfile = () => {
     try {
       await cancelUniversityAccess(user.universityId);
       toast.success('Acesso cancelado');
-    } catch {
-      toast.error('Erro ao cancelar acesso');
+    } catch (error: unknown) {
+        const axiosError = error as AxiosError<ApiResponse<null>>;
+        const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao cancelar acesso';
+        toast.error(message);
     }
   };
 

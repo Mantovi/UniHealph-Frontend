@@ -6,6 +6,8 @@ import { toast } from 'react-toastify';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useRoleGuard } from '@/hooks/useRoleGuard';
 import type { Role } from '@/types/user';
+import type { AxiosError } from 'axios';
+import type { ApiResponse } from '@/types/api';
 
 const ProductTypes = () => {
   const REQUIRED_ROLE: Role = 'ADMIN';
@@ -22,8 +24,12 @@ const ProductTypes = () => {
     try {
       const data = await getProductTypes();
       setTypes(data);
-    } catch {
-      toast.error('Erro ao carregar tipos de produto');
+    } catch (error: unknown) {
+        const axiosError = error as AxiosError<ApiResponse<null>>;
+        const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao carregar tipos de produto';
+        toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -40,8 +46,12 @@ const ProductTypes = () => {
         toast.success('Tipo de produto ativado');
       }
       loadProductTypes();
-    } catch {
-      toast.error('Erro ao atualizar status');
+    } catch (error: unknown) {
+        const axiosError = error as AxiosError<ApiResponse<null>>;
+        const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao ativar/desativar tipo de produto';
+        toast.error(message);
     } finally {
       setActionLoadingId(null);
     }

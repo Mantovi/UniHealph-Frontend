@@ -29,9 +29,12 @@ const AdminUniversityRequest = () => {
     try {
       const data = await getAllUniversityRequests();
       setRequests(sortByDateDesc(data ?? [], 'requestedAt'));
-    } catch (err) {
-      console.error(err);
-      toast.error('Erro ao carregar requisições');
+    } catch (error: unknown) {
+        const axiosError = error as AxiosError<ApiResponse<null>>;
+        const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao carregar solicitações';
+        toast.error(message);
     }
   };
 

@@ -7,6 +7,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useRoleGuard } from '@/hooks/useRoleGuard';
 import type { Role } from '@/types/user';
 import { sortByAlpha } from '@/utils/sort';
+import type { AxiosError } from 'axios';
+import type { ApiResponse } from '@/types/api';
 
 const PaymentMethods = () => {
   const REQUIRED_ROLE: Role = 'ADMIN';
@@ -22,8 +24,12 @@ const PaymentMethods = () => {
     try {
       const data = await getPaymentMethods();
       setMethods(sortByAlpha(data, 'type'));
-    } catch {
-      toast.error('Erro ao carregar métodos de pagamento');
+    } catch (error: unknown) {
+        const axiosError = error as AxiosError<ApiResponse<null>>;
+        const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao carregar métodos de pagamento';
+        toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -35,8 +41,12 @@ const PaymentMethods = () => {
       await deletePaymentMethod(id);
       toast.success('Método excluído');
       loadMethods();
-    } catch {
-      toast.error('Erro ao excluir');
+    } catch (error: unknown) {
+        const axiosError = error as AxiosError<ApiResponse<null>>;
+        const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao excluir método';
+        toast.error(message);
     }
   };
 

@@ -35,8 +35,12 @@ const SpecialtiesUpdate = () => {
           active: found.active,
           subSpecialties: found.subSpecialties,
         });
-      } catch {
-        toast.error('Erro ao carregar especialidade');
+      } catch (error: unknown) {
+        const axiosError = error as AxiosError<ApiResponse<null>>;
+        const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao carregar especialidade';
+        toast.error(message);
       }
     };
     load();

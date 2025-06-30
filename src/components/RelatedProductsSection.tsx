@@ -4,6 +4,8 @@ import type { ProductResponse } from '@/types/product';
 import ProductCard from './ProductCard';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import type { AxiosError } from 'axios';
+import type { ApiResponse } from '@/types/api';
 
 interface Props {
   currentProductId: number;
@@ -23,8 +25,12 @@ const RelatedProductsSection = ({ currentProductId, productTypeId }: Props) => {
       try {
         const product = await getProductById(currentProductId);
         setProductTypeName(product.productTypeName);
-      } catch {
-        toast.error('Erro ao carregar informações do produto atual.');
+      } catch (error: unknown) {
+        const axiosError = error as AxiosError<ApiResponse<null>>;
+        const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao carregar informações do produto atual.';
+        toast.error(message);
       }
     };
     loadProductTypeName();
@@ -52,8 +58,12 @@ const RelatedProductsSection = ({ currentProductId, productTypeId }: Props) => {
         }
         return unique;
       });
-    } catch {
-      toast.error('Erro ao buscar produtos semelhantes');
+    } catch (error: unknown) {
+        const axiosError = error as AxiosError<ApiResponse<null>>;
+        const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao carregar produtos semelhantes.';
+        toast.error(message);
     }
   }, [productTypeId, currentProductId, productTypeName]);
 

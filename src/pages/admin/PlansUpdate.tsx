@@ -38,8 +38,12 @@ const PlansUpdate = () => {
           priceYearly: found.priceYearly,
           description: found.description,
         });
-      } catch {
-        toast.error("Erro ao carregar plano");
+      } catch (error: unknown) {
+        const axiosError = error as AxiosError<ApiResponse<null>>;
+        const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao carregar informações do produto atual.';
+        toast.error(message);
         navigate("/admin/plans");
       }
     };

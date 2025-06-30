@@ -31,8 +31,12 @@ const PaymentMethodsUpdate = () => {
           return navigate(-1);
         }
         setInitialData({ type: found.type, description: found.description });
-      } catch {
-        toast.error('Erro ao carregar método');
+      } catch (error: unknown) {
+        const axiosError = error as AxiosError<ApiResponse<null>>;
+        const message = axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Erro ao carregar métodos de pagamento';
+        toast.error(message);
       }
     };
     load();

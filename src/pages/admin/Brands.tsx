@@ -7,6 +7,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useRoleGuard } from '@/hooks/useRoleGuard';
 import type { Role } from '@/types/user';
 import { sortByAlpha } from '@/utils/sort';
+import type { AxiosError } from 'axios';
+import type { ApiResponse } from '@/types/api';
 
 const Brands = () => {
   const REQUIRED_ROLE: Role = 'ADMIN';
@@ -22,8 +24,12 @@ const Brands = () => {
     try {
       const data = await getBrands();
       setBrands(sortByAlpha(data ?? [], 'name'));
-    } catch {
-      toast.error('Erro ao carregar marcas');
+    } catch (error: unknown) {
+            const axiosError = error as AxiosError<ApiResponse<null>>;
+            const message = axiosError.response?.data?.message ||
+            axiosError.message ||
+            'Erro ao carregar marcas';
+            toast.error(message);
     } finally {
       setLoading(false);
     }

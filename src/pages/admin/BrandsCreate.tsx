@@ -7,6 +7,8 @@ import BrandModal from '@/components/BrandModal';
 import { useRoleGuard } from '@/hooks/useRoleGuard';
 import type { Role } from '@/types/user';
 import { showApiMessage } from '@/utils/showApiMessage';
+import type { AxiosError } from 'axios';
+import type { ApiResponse } from '@/types/api';
 
 const BrandsCreate = () => {
   const REQUIRED_ROLE: Role = 'ADMIN';
@@ -21,8 +23,12 @@ const BrandsCreate = () => {
       const response = await createBrand(data);
       showApiMessage(response);
       navigate(-1);
-    } catch {
-      toast.error('Erro ao criar marca');
+    } catch (error: unknown) {
+            const axiosError = error as AxiosError<ApiResponse<null>>;
+            const message = axiosError.response?.data?.message ||
+            axiosError.message ||
+            'Erro ao criar marca';
+            toast.error(message);
     } finally {
       setLoading(false);
     }
