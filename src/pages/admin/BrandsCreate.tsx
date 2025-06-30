@@ -8,7 +8,6 @@ import { useRoleGuard } from '@/hooks/useRoleGuard';
 import type { Role } from '@/types/user';
 import { showApiMessage } from '@/utils/showApiMessage';
 
-
 const BrandsCreate = () => {
   const REQUIRED_ROLE: Role = 'ADMIN';
   useRoleGuard(REQUIRED_ROLE);
@@ -20,7 +19,7 @@ const BrandsCreate = () => {
     try {
       setLoading(true);
       const response = await createBrand(data);
-      showApiMessage(response)
+      showApiMessage(response);
       navigate(-1);
     } catch {
       toast.error('Erro ao criar marca');

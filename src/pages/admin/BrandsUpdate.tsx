@@ -7,7 +7,6 @@ import BrandModal from '@/components/BrandModal';
 import { useRoleGuard } from '@/hooks/useRoleGuard';
 import type { Role } from '@/types/user';
 
-
 const BrandsUpdate = () => {
   const REQUIRED_ROLE: Role = 'ADMIN';
   useRoleGuard(REQUIRED_ROLE);

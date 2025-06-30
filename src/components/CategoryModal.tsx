@@ -57,9 +57,9 @@ const CategoryModal = ({ open, onClose, onSubmit, initialData, loading }: Props)
           </div>
 
           <div>
-            <Label>
-              <input type="checkbox" {...register('active')} className="mr-2" />
-              Ativa
+            <Label className="flex items-center gap-2">
+              <input type="checkbox" {...register('active')} className="accent-green-600" />
+              Categoria ativa
             </Label>
           </div>
 

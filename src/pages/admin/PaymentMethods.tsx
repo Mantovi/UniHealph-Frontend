@@ -6,11 +6,12 @@ import { Button } from '@/components/ui/button';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useRoleGuard } from '@/hooks/useRoleGuard';
 import type { Role } from '@/types/user';
+import { sortByAlpha } from '@/utils/sort';
 
 const PaymentMethods = () => {
-    const REQUIRED_ROLE: Role = 'ADMIN';
-    useRoleGuard(REQUIRED_ROLE);
-    
+  const REQUIRED_ROLE: Role = 'ADMIN';
+  useRoleGuard(REQUIRED_ROLE);
+
   const [methods, setMethods] = useState<PaymentMethod[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ const PaymentMethods = () => {
     setLoading(true);
     try {
       const data = await getPaymentMethods();
-      setMethods(data);
+      setMethods(sortByAlpha(data, 'type'));
     } catch {
       toast.error('Erro ao carregar métodos de pagamento');
     } finally {
@@ -45,30 +46,38 @@ const PaymentMethods = () => {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4 space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
         <h1 className="text-2xl font-bold">Métodos de Pagamento</h1>
-        <Button onClick={() => navigate('/admin/payment-methods/create', { state: { backgroundLocation: location } })}>+ Novo Método</Button>
+        <Button onClick={() => navigate('/admin/payment-methods/create', { state: { backgroundLocation: location } })}>
+          + Novo Método
+        </Button>
       </div>
 
       {loading ? (
         <p>Carregando...</p>
       ) : (
-        <div className="space-y-4">
+        <div className="flex flex-col gap-4">
           {methods.map((method) => (
-            <div key={method.id} className="border rounded p-4 bg-white shadow">
-              <div className="flex justify-between items-center">
-                <div>
-                  <h2 className="font-semibold text-lg">{method.type}</h2>
-                  <p className="text-sm text-gray-600">{method.description}</p>
-                </div>
-                <div className="flex gap-2">
-                  <Button variant="outline" onClick={() => navigate(`/admin/payment-methods/update/${method.id}`, { state: { backgroundLocation: location } })}>
-                    Editar
-                  </Button>
-                  <Button variant="destructive" onClick={() => handleDelete(method.id)}>
-                    Excluir
-                  </Button>
-                </div>
+            <div
+              key={method.id}
+              className="flex flex-col sm:flex-row sm:items-center justify-between border rounded-xl p-4 bg-white shadow min-h-[90px]"
+            >
+              <div>
+                <h2 className="font-semibold text-lg">{method.type}</h2>
+                <p className="text-sm text-gray-600">{method.description}</p>
+              </div>
+              <div className="flex gap-2 mt-2 sm:mt-0">
+                <Button
+                  variant="outline"
+                  onClick={() =>
+                    navigate(`/admin/payment-methods/update/${method.id}`, { state: { backgroundLocation: location } })
+                  }
+                >
+                  Editar
+                </Button>
+                <Button variant="destructive" onClick={() => handleDelete(method.id)}>
+                  Excluir
+                </Button>
               </div>
             </div>
           ))}

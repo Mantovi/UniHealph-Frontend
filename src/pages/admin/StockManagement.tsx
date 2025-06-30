@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getAllProducts } from '@/api/products';
-import { updateStockQuantity } from '@/api/stock';
-import { updateStockThreshold } from '@/api/stock';
+import { updateStockQuantity, updateStockThreshold } from '@/api/stock';
 import type { ProductResponse } from '@/types/product';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -63,7 +62,6 @@ const StockManagement = () => {
     try {
       await updateStockQuantity(id, newQty);
       await updateStockThreshold(id, newThreshold);
-
       toast.success('Estoque e limite atualizados!');
       handleCancel();
       loadProducts();
@@ -74,17 +72,23 @@ const StockManagement = () => {
 
   const filteredProducts = products
     .filter(p => !showOnlyAlerts || p.availableStock <= p.stockThreshold)
-    .sort((a, b) => a.availableStock - b.availableStock);
+    .sort((a, b) => {
+      const aAlert = a.availableStock <= a.stockThreshold;
+      const bAlert = b.availableStock <= b.stockThreshold;
+      if (aAlert !== bAlert) return aAlert ? -1 : 1;
+      return a.availableStock - b.availableStock;
+    });
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-4 space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
         <h1 className="text-2xl font-bold">Gerenciamento de Estoque</h1>
         <label className="flex items-center gap-2">
           <input
             type="checkbox"
             checked={showOnlyAlerts}
-            onChange={() => setShowOnlyAlerts((v) => !v)}
+            onChange={() => setShowOnlyAlerts(v => !v)}
+            className="accent-red-600"
           />
           <span className="text-sm">Mostrar apenas produtos em alerta</span>
         </label>
@@ -93,7 +97,7 @@ const StockManagement = () => {
         <p>Carregando...</p>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full border rounded bg-white shadow text-left">
+          <table className="w-full border rounded-xl bg-white shadow text-left">
             <thead>
               <tr className="bg-gray-100">
                 <th className="px-4 py-2">Nome</th>
@@ -113,7 +117,7 @@ const StockManagement = () => {
                 const isAlert = product.availableStock <= product.stockThreshold;
                 const isEditing = editId === product.id;
                 return (
-                  <tr key={product.id} className={isAlert ? 'bg-red-100' : ''}>
+                  <tr key={product.id} className={isAlert ? 'bg-red-50' : ''}>
                     <td className="px-4 py-2">{product.name}</td>
                     <td className="px-4 py-2">{product.saleType}</td>
                     <td className={`px-4 py-2 font-bold ${isAlert ? 'text-red-600' : ''}`}>

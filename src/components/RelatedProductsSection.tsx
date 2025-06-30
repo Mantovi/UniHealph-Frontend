@@ -27,23 +27,19 @@ const RelatedProductsSection = ({ currentProductId, productTypeId }: Props) => {
         toast.error('Erro ao carregar informações do produto atual.');
       }
     };
-
     loadProductTypeName();
   }, [currentProductId]);
 
   const loadMore = useCallback(async () => {
     if (!productTypeName) return;
-
     try {
       const result = await getRelatedProducts(productTypeId);
-
       const filtered = result.filter(
         (p) =>
           p.id !== currentProductId &&
           p.productTypeName === productTypeName &&
           p.active
       );
-
       setRelated((prev) => {
         const map = new Map<number, ProductResponse>();
         const all = [...prev, ...filtered];
@@ -71,8 +67,8 @@ const RelatedProductsSection = ({ currentProductId, productTypeId }: Props) => {
   };
 
   return (
-    <section className="mt-12">
-      <h2 className="text-xl font-bold mb-4">Produtos semelhantes</h2>
+    <section className="mt-10 bg-blue-50 rounded-2xl p-6">
+      <h2 className="text-xl font-bold mb-4 text-blue-900">Produtos semelhantes</h2>
       <div
         className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
         ref={containerRef}
@@ -94,6 +90,6 @@ const RelatedProductsSection = ({ currentProductId, productTypeId }: Props) => {
       </div>
     </section>
   );
-}
+};
 
 export default RelatedProductsSection;

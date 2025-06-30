@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useRoleGuard } from '@/hooks/useRoleGuard';
 import type { Role } from '@/types/user';
+import { sortByAlpha } from '@/utils/sort';
 
 const ProductsList = () => {
   const REQUIRED_ROLE: Role = 'ADMIN';
@@ -21,7 +22,7 @@ const ProductsList = () => {
     setLoading(true);
     try {
       const data = await getAllProducts();
-      setProducts(data);
+      setProducts(sortByAlpha(data ?? [], 'name'));
     } catch {
       toast.error('Erro ao carregar produtos');
     } finally {
@@ -52,30 +53,45 @@ const ProductsList = () => {
   }, []);
 
   return (
-    <div className="max-w-5xl mx-auto py-8 px-4 space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Produtos</h1>
-        <Button onClick={() => navigate('/admin/products/create', { state: { backgroundLocation: location } })}>+ Novo Produto</Button>
+    <div className="max-w-3xl mx-auto py-8 px-2 md:px-4 space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+        <h1 className="text-2xl font-bold text-blue-900">Produtos</h1>
+        <Button
+          className="w-full sm:w-auto"
+          onClick={() => navigate('/admin/products/create', { state: { backgroundLocation: location } })}
+        >
+          + Novo Produto
+        </Button>
       </div>
 
       {loading ? (
-        <p>Carregando...</p>
+        <p className="text-blue-900">Carregando...</p>
+      ) : products.length === 0 ? (
+        <p className="text-gray-500">Nenhum produto cadastrado.</p>
       ) : (
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {products.map((p) => (
-            <div key={p.id} className="border rounded p-4 bg-white shadow flex justify-between items-center">
+            <div
+              key={p.id}
+              className="border rounded-2xl p-4 bg-white shadow flex flex-row justify-between items-center min-h-[90px] h-24"
+            >
               <div>
-                <h2 className="text-lg font-medium">{p.name}</h2>
-                <p className="text-sm text-gray-500">
-                  R$ {p.price.toFixed(2).replace('.', ',')} - {p.saleType} - {p.productTypeName} - {p.brandName} - Estoque: {p.availableStock} - {p.active ? 'Ativo' : 'Inativo'}
-                </p>
+                <div className="text-lg font-medium text-blue-800">{p.name}</div>
+                <div className="text-sm text-gray-500 line-clamp-2">
+                  R$ {p.price.toFixed(2).replace('.', ',')} • {p.saleType} • {p.productTypeName} • {p.brandName} • Estoque: {p.availableStock} • {p.active ? 'Ativo' : 'Inativo'}
+                </div>
               </div>
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={() => navigate(`/admin/products/update/${p.id}`, { state: { backgroundLocation: location } })}>
+              <div className="flex flex-row gap-2 flex-shrink-0">
+                <Button
+                  variant="outline"
+                  className="min-w-[80px] bg-sky-300 hover:bg-sky-400"
+                  onClick={() => navigate(`/admin/products/update/${p.id}`, { state: { backgroundLocation: location } })}
+                >
                   Editar
                 </Button>
                 <Button
-                  variant={p.active ? "destructive" : "default"}
+                  variant={p.active ? 'destructive' : 'default'}
+                  className="min-w-[80px]"
                   onClick={() => handleToggleActive(p.id, p.active)}
                   disabled={actionLoadingId === p.id}
                 >

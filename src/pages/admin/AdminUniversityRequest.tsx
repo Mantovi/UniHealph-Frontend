@@ -12,12 +12,14 @@ import type { Role } from '@/types/user';
 import { showApiMessage } from '@/utils/showApiMessage';
 import type { AxiosError } from 'axios';
 import type { ApiResponse } from '@/types/api';
-const AdminUniversityRequest = () => {
-    const REQUIRED_ROLE: Role = 'ADMIN';
-    useRoleGuard(REQUIRED_ROLE);
+import { sortByDateDesc } from '@/utils/sort';
 
-    const [requests, setRequests] = useState<PendingUniversityRequestResponse[]>([]);
-    const [loadingId, setLoadingId] = useState<number | null>(null);
+const AdminUniversityRequest = () => {
+  const REQUIRED_ROLE: Role = 'ADMIN';
+  useRoleGuard(REQUIRED_ROLE);
+
+  const [requests, setRequests] = useState<PendingUniversityRequestResponse[]>([]);
+  const [loadingId, setLoadingId] = useState<number | null>(null);
 
   useEffect(() => {
     loadRequests();
@@ -26,7 +28,7 @@ const AdminUniversityRequest = () => {
   const loadRequests = async () => {
     try {
       const data = await getAllUniversityRequests();
-      setRequests(data ?? []);
+      setRequests(sortByDateDesc(data ?? [], 'requestedAt'));
     } catch (err) {
       console.error(err);
       toast.error('Erro ao carregar requisições');
@@ -67,26 +69,25 @@ const AdminUniversityRequest = () => {
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString('pt-BR', {
+  const formatDate = (dateString: string) =>
+    new Date(dateString).toLocaleString('pt-BR', {
       dateStyle: 'short',
       timeStyle: 'short',
     });
-  };
 
-  const statusColor = (status: string) => {
+  const statusBadge = (status: string) => {
     switch (status) {
       case 'APROVADA':
-        return 'text-green-600 font-semibold';
+        return <span className="inline-block px-2 py-1 rounded bg-green-100 text-green-800 text-xs font-semibold">Aprovada</span>;
       case 'RECUSADA':
-        return 'text-red-600 font-semibold';
+        return <span className="inline-block px-2 py-1 rounded bg-red-100 text-red-700 text-xs font-semibold">Recusada</span>;
       default:
-        return 'text-yellow-600 font-semibold';
+        return <span className="inline-block px-2 py-1 rounded bg-yellow-100 text-yellow-700 text-xs font-semibold">Aguardando</span>;
     }
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-6 mt-10 space-y-6">
+    <div className="max-w-4xl mx-auto p-3 sm:p-6 mt-6 space-y-6">
       <h1 className="text-2xl font-bold text-center">Requisições de Universidades</h1>
 
       {requests.length === 0 ? (
@@ -94,8 +95,8 @@ const AdminUniversityRequest = () => {
       ) : (
         <ul className="space-y-4">
           {requests.map((req) => (
-            <li key={req.id} className="p-4 border rounded-lg shadow bg-white">
-              <div className="flex justify-between items-center mb-2">
+            <li key={req.id} className="p-4 border rounded-2xl shadow-sm bg-white">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-2 gap-2">
                 <div>
                   <p className="text-lg font-bold">{req.name}</p>
                   <p className="text-sm text-gray-500">{req.email} • CNPJ: {req.cnpj}</p>
@@ -108,11 +109,11 @@ const AdminUniversityRequest = () => {
                   <p className="text-sm text-gray-500">
                     Solicitado em: {formatDate(req.requestedAt)}
                   </p>
-                  <p className={statusColor(req.status)}>Status: {req.status}</p>
+                  <div className="mt-1">{statusBadge(req.status)}</div>
                 </div>
 
                 {req.status === 'AGUARDANDO' && (
-                  <div className="flex flex-col gap-2">
+                  <div className="flex gap-2 mt-2 sm:mt-0">
                     <Button
                       variant="default"
                       onClick={() => handleApprove(req.id)}

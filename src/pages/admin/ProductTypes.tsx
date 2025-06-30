@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getProductTypes,  deactivateProductType, activateProductType } from '@/api/productType';
+import { getProductTypes, deactivateProductType, activateProductType } from '@/api/productType';
 import type { ProductType } from '@/types/productType';
 import { Button } from '@/components/ui/button';
 import { toast } from 'react-toastify';
@@ -53,33 +53,42 @@ const ProductTypes = () => {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4 space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
         <h1 className="text-2xl font-bold">Tipos de Produto</h1>
-        <Button onClick={() => navigate('/admin/product-types/create', { state: { backgroundLocation: location } })}>+ Novo Tipo</Button>
+        <Button onClick={() => navigate('/admin/product-types/create', { state: { backgroundLocation: location } })}>
+          + Novo Tipo
+        </Button>
       </div>
-
       {loading ? (
         <p>Carregando...</p>
       ) : (
         <div className="space-y-4">
           {types.map((t) => (
-            <div key={t.id} className="border rounded p-4 bg-white shadow flex justify-between items-center">
+            <div key={t.id}
+              className="border rounded-xl p-6 bg-white shadow flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 min-h-[110px] transition-all"
+            >
               <div>
                 <h2 className="text-lg font-medium">{t.name}</h2>
                 <p className="text-sm text-gray-500">
-                  Status: {t.active ? 'Ativo' : 'Inativo'} - Produtos: {t.products?.length || 0} </p>
+                  Status: <span className={t.active ? "text-green-700" : "text-red-600"}>{t.active ? 'Ativo' : 'Inativo'}</span>
+                  {" "}• Produtos: {t.products?.length || 0}
+                </p>
               </div>
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={() => navigate(`/admin/product-types/update/${t.id}`, { state: { backgroundLocation: location } })}>Editar</Button>
+              <div className="flex flex-row gap-2 w-full sm:w-auto">
+                <Button variant="outline" className="w-full sm:w-auto"
+                  onClick={() => navigate(`/admin/product-types/update/${t.id}`, { state: { backgroundLocation: location } })}>
+                  Editar
+                </Button>
                 <Button
                   variant={t.active ? "destructive" : "default"}
+                  className="w-full sm:w-auto"
                   onClick={() => handleToggleActive(t.id, t.active)}
                   disabled={actionLoadingId === t.id}
                 >
                   {actionLoadingId === t.id
                     ? 'Aguarde...'
                     : t.active ? 'Desativar' : 'Reativar'}
-                </Button>              
+                </Button>
               </div>
             </div>
           ))}

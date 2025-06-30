@@ -17,10 +17,10 @@ const PointsCard: FunctionComponent<Props> = ({ history }) => {
   const amountFormatted = `${isPositive ? '+' : '-'}${history.amount}`;
 
   return (
-    <Card className="p-4 border bg-white rounded shadow-sm flex flex-col gap-1">
-      <div className="flex justify-between items-center">
-        <span className="text-sm font-semibold">{history.description}</span>
-        <span className={`text-sm font-bold ${isPositive ? 'text-green-700' : 'text-red-600'}`}>
+    <Card className="p-4 border bg-white rounded-xl shadow-sm flex flex-col gap-1">
+      <div className="flex justify-between items-center mb-1">
+        <span className="text-base font-semibold text-blue-900">{history.description}</span>
+        <span className={`text-base font-bold ${isPositive ? 'text-green-700' : 'text-red-600'}`}>
           {amountFormatted} pts
         </span>
       </div>

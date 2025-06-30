@@ -9,6 +9,7 @@ import ProductSortMenu from '@/components/ProductSortMenu';
 import CategoryTreeFilter from '@/components/CategoryTreeFilter';
 import ProductBrandFilter from '@/components/ProductBrandFilter';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
 
 const Products = () => {
   const [products, setProducts] = useState<ProductResponse[]>([]);
@@ -20,6 +21,7 @@ const Products = () => {
   const [searchParams] = useSearchParams();
   const [initialized, setInitialized] = useState(false);
 
+  const [openSheet, setOpenSheet] = useState(false);
 
   const navigate = useNavigate();
 
@@ -66,7 +68,6 @@ const Products = () => {
       if (requestId === lastRequestId.current) {
         setProducts(data);
       }
-
     } catch {
       if (requestId === lastRequestId.current) {
         toast.error('Erro ao buscar produtos');
@@ -81,18 +82,14 @@ const Products = () => {
   const handleToggleSaleType = (type: string) => {
     if (isFilterLocked) return;
     lockFiltersTemporarily();
-
     setSaleTypes((prev) => {
       const updated = prev.includes(type)
         ? prev.filter((t) => t !== type)
         : [...prev, type];
-
       const params = new URLSearchParams(searchParams);
       params.delete('saleType');
       updated.forEach((t) => params.append('saleType', t));
-
       navigate(`/products?${params.toString()}`, { replace: true });
-
       return updated;
     });
   };
@@ -100,18 +97,14 @@ const Products = () => {
   const handleToggleProductType = (id: number) => {
     if (isFilterLocked) return;
     lockFiltersTemporarily();
-
     setSelectedProductTypes((prev) => {
       const updated = prev.includes(id)
         ? prev.filter((i) => i !== id)
         : [...prev, id];
-
       const params = new URLSearchParams(searchParams);
       params.delete('productTypeIds');
       updated.forEach((pid) => params.append('productTypeIds', pid.toString()));
-
       navigate(`/products?${params.toString()}`, { replace: true });
-
       return updated;
     });
   };
@@ -119,18 +112,14 @@ const Products = () => {
   const handleToggleBrand = (id: number) => {
     if (isFilterLocked) return;
     lockFiltersTemporarily();
-
     setSelectedBrandIds((prev) => {
       const updated = prev.includes(id)
         ? prev.filter((i) => i !== id)
         : [...prev, id];
-
       const params = new URLSearchParams(searchParams);
       params.delete('brandIds');
       updated.forEach((bid) => params.append('brandIds', bid.toString()));
-
       navigate(`/products?${params.toString()}`, { replace: true });
-
       return updated;
     });
   };
@@ -148,12 +137,55 @@ const Products = () => {
     }
   };
 
-
-
   return (
-    <>
-      <div className="flex flex-col md:flex-row gap-6 max-w-7xl mx-auto px-4 py-8">
-        <div className="w-full md:w-64 space-y-8">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 py-10">
+      <div className="max-w-7xl mx-auto px-2 md:px-4 flex flex-col md:flex-row gap-8">
+        
+        <div className="md:hidden mb-4 w-full flex justify-between">
+          <Sheet open={openSheet} onOpenChange={setOpenSheet}>
+            <SheetTrigger asChild>
+              <button className="w-full bg-blue-300  rounded-xl font-semibold p-3 shadow hover:bg-blue-800 hover:text-white transition">
+                Filtros e Ordenações
+              </button>
+            </SheetTrigger>
+            <SheetContent side="bottom" className="max-h-[92vh] overflow-y-auto">
+              <div className="flex justify-end mb-4">
+                <ProductSortMenu
+                  sortBy={sortBy}
+                  direction={direction}
+                  onChange={(field, dir) => {
+                    setSortBy(field);
+                    setDirection(dir);
+                  }}
+                />
+              </div>
+
+              <div className="space-y-8 py-2 ml-2">
+                <ProductFilters
+                  selectedSaleTypes={saleTypes}
+                  onToggleSaleType={handleToggleSaleType}
+                />
+                <CategoryTreeFilter
+                  selectedProductTypes={selectedProductTypes}
+                  onToggleProductType={handleToggleProductType}
+                />
+                <ProductBrandFilter
+                  selectedBrandIds={selectedBrandIds}
+                  onToggleBrand={handleToggleBrand}
+                />
+                <SheetClose asChild>
+                  <button className="w-full bg-emerald-600 text-white rounded-xl p-3 font-bold mt-3">
+                    Aplicar filtros
+                  </button>
+                </SheetClose>
+              </div>
+            </SheetContent>
+
+          </Sheet>
+        </div>
+
+        <aside className="w-full md:w-64 flex-shrink-0 space-y-8 bg-white rounded-3xl shadow-md p-4 md:p-6 border border-blue-100 
+        md:sticky md:top-20 h-fit md:h-[80vh] md:max-h-[80vh] md:overflow-y-auto scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-blue-50 hidden md:block">
           <ProductFilters
             selectedSaleTypes={saleTypes}
             onToggleSaleType={handleToggleSaleType}
@@ -166,25 +198,28 @@ const Products = () => {
             selectedBrandIds={selectedBrandIds}
             onToggleBrand={handleToggleBrand}
           />
-        </div>
-
-        <div className="flex-1">
-          <div className="flex justify-between items-center mb-4">
-            <h1 className="text-2xl font-bold">Produtos</h1>
-            <ProductSortMenu
-              sortBy={sortBy}
-              direction={direction}
-              onChange={(field, dir) => {
-                setSortBy(field);
-                setDirection(dir);
-              }}
-            />
+        </aside>
+        
+        <main className="flex-1 w-full">
+          <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-3">
+            <h1 className="text-2xl font-bold text-blue-900">Produtos</h1>
+            <div className="hidden md:block">
+              <ProductSortMenu
+                sortBy={sortBy}
+                direction={direction}
+                onChange={(field, dir) => {
+                  setSortBy(field);
+                  setDirection(dir);
+                }}
+              />
+            </div>
           </div>
-
           {products.length === 0 ? (
-            <p className="text-gray-500">Nenhum produto encontrado com os filtros atuais.</p>
+            <p className="text-blue-700 bg-blue-100 rounded-lg p-6 text-center text-lg font-medium">
+              Nenhum produto encontrado com os filtros atuais.
+            </p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-7">
               {products.map((product) => (
                 <ProductCard
                   key={product.id}
@@ -194,9 +229,9 @@ const Products = () => {
               ))}
             </div>
           )}
-        </div>
+        </main>
       </div>
-    </>
+    </div>
   );
 };
 

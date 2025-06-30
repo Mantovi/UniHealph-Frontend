@@ -1,4 +1,6 @@
 import type { FunctionComponent } from 'react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 
 interface Props {
   selectedSaleTypes: string[];
@@ -9,23 +11,22 @@ const saleTypes = ['VENDA', 'ALUGUEL'];
 
 const ProductFilters: FunctionComponent<Props> = ({ selectedSaleTypes, onToggleSaleType }) => {
   return (
-    <div>
-      <h3 className="font-semibold mb-2">Tipo de Venda</h3>
-      <ul className="space-y-1 text-sm">
+    <div className="space-y-4 text-sm">
+      <h3 className="font-semibold text-blue-900 text-base">Tipo de Venda</h3>
+
+      <ul className="space-y-2">
         {saleTypes.map((type) => {
           const isChecked = selectedSaleTypes.includes(type);
           return (
             <li key={type} className="flex items-center gap-2 pl-1">
-              <input
-                type="checkbox"
+              <Checkbox
                 id={`sale-${type}`}
                 checked={isChecked}
-                onChange={() => onToggleSaleType(type)}
-                aria-checked={isChecked}
+                onCheckedChange={() => onToggleSaleType(type)}
               />
-              <label htmlFor={`sale-${type}`}>
+              <Label htmlFor={`sale-${type}`}>
                 {type === 'VENDA' ? 'Venda' : 'Aluguel'}
-              </label>
+              </Label>
             </li>
           );
         })}

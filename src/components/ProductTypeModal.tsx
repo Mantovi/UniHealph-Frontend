@@ -46,20 +46,17 @@ const ProductTypeModal = ({ open, onClose, onSubmit, initialData, loading }: Pro
           <h2 className="text-xl font-semibold">
             {initialData ? 'Editar Tipo de Produto' : 'Novo Tipo de Produto'}
           </h2>
-
           <div>
             <Label>Nome</Label>
             <Input {...register('name')} />
             {errors.name && <p className="text-sm text-red-600">{errors.name.message}</p>}
           </div>
-
           <div>
-            <Label>
-              <input type="checkbox" {...register('active')} className="mr-2" />
-              Ativo
+            <Label className="flex items-center gap-2">
+              <input type="checkbox" {...register('active')} className="accent-green-600" />
+              Tipo ativo
             </Label>
           </div>
-
           <Button type="submit" disabled={loading} className="w-full">
             {loading ? 'Salvando...' : initialData ? 'Salvar alterações' : 'Criar Tipo'}
           </Button>

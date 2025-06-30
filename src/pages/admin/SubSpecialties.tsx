@@ -34,10 +34,10 @@ const SubSpecialties = () => {
     try {
       if (currentActive) {
         await deactivateSubSpecialty(id);
-        toast.success('SubEspecialidade desativada');
+        toast.success('Subespecialidade desativada');
       } else {
         await activateSubSpecialty(id);
-        toast.success('SubEspecialidade ativada');
+        toast.success('Subespecialidade ativada');
       }
       loadSubSpecialties();
     } catch {
@@ -53,9 +53,11 @@ const SubSpecialties = () => {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4 space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
         <h1 className="text-2xl font-bold">Subespecialidades</h1>
-        <Button onClick={() => navigate('/admin/sub-specialties/create', { state: { backgroundLocation: location } })}>+ Nova</Button>
+        <Button onClick={() => navigate('/admin/sub-specialties/create', { state: { backgroundLocation: location } })}>
+          + Nova Subespecialidade
+        </Button>
       </div>
 
       {loading ? (
@@ -63,19 +65,28 @@ const SubSpecialties = () => {
       ) : (
         <div className="space-y-4">
           {subSpecialties.map((s) => (
-            <div key={s.id} className="border rounded p-4 bg-white shadow flex justify-between items-center">
+            <div
+              key={s.id}
+              className="border rounded-xl p-6 bg-white shadow flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 min-h-[110px]"
+            >
               <div>
                 <h2 className="text-lg font-medium">{s.name}</h2>
                 <p className="text-sm text-gray-500">
-                  Status: {s.active ? 'Ativa' : 'Inativa'} - Categorias: {s.categories?.length ?? 0}
+                  Status: <span className={s.active ? "text-green-700" : "text-red-600"}>{s.active ? 'Ativa' : 'Inativa'}</span>
+                  {" "}• Categorias: {s.categories?.length ?? 0}
                 </p>
               </div>
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={() => navigate(`/admin/sub-specialties/update/${s.id}`, { state: { backgroundLocation: location } })}>
+              <div className="flex flex-row gap-2 w-full sm:w-auto">
+                <Button
+                  variant="outline"
+                  className="w-full sm:w-auto"
+                  onClick={() => navigate(`/admin/sub-specialties/update/${s.id}`, { state: { backgroundLocation: location } })}
+                >
                   Editar
                 </Button>
                 <Button
                   variant={s.active ? "destructive" : "default"}
+                  className="w-full sm:w-auto"
                   onClick={() => handleToggleActive(s.id, s.active)}
                   disabled={actionLoadingId === s.id}
                 >

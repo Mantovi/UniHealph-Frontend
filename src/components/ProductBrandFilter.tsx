@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { getAllBrands } from '@/api/products';
 import type { Brand } from '@/types/brand';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 
 interface Props {
   selectedBrandIds: number[];
@@ -13,23 +15,25 @@ const ProductBrandFilter = ({ selectedBrandIds, onToggleBrand }: Props) => {
   useEffect(() => {
     getAllBrands()
       .then(setBrands)
-      .catch(() => console.error('Erro ao carregar marcas'));
+      .catch(() => {});
   }, []);
 
   return (
-    <div className="space-y-2 text-sm">
-      <h3 className="font-semibold">Marcas</h3>
-      {brands.map((brand) => (
-        <div key={brand.id} className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            id={`brand-${brand.id}`}
-            checked={selectedBrandIds.includes(brand.id)}
-            onChange={() => onToggleBrand(brand.id)}
-          />
-          <label htmlFor={`brand-${brand.id}`}>{brand.name}</label>
-        </div>
-      ))}
+    <div className="space-y-4 text-sm">
+      <h3 className="font-semibold text-blue-900 text-base">Marcas</h3>
+
+      <div className="max-h-[300px] overflow-y-auto pr-2 custom-scroll space-y-2">
+        {brands.map((brand) => (
+          <div key={brand.id} className="flex items-center gap-2">
+            <Checkbox
+              id={`brand-${brand.id}`}
+              checked={selectedBrandIds.includes(brand.id)}
+              onCheckedChange={() => onToggleBrand(brand.id)}
+            />
+            <Label htmlFor={`brand-${brand.id}`}>{brand.name}</Label>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

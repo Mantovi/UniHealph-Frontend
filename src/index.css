@@ -1,6 +1,32 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@media (min-width: 768px) {
+  aside::-webkit-scrollbar {
+    width: 6px;
+    background: transparent;
+  }
+  aside::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+  }
+  aside::-webkit-scrollbar-thumb:hover {
+    background: #60a5fa; 
+  }
+  aside {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 #f1f5f9;
+  }
+}
+
+aside {
+  scrollbar-width: none; 
+  -ms-overflow-style: none;
+}
+aside::-webkit-scrollbar {
+  display: none;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

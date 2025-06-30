@@ -52,44 +52,63 @@ const PlanModal = ({ open, onClose, onSubmit, initialData, loading }: Props) => 
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent>
-        <DialogTitle>Plano</DialogTitle>
+      <DialogContent className="max-w-lg w-full">
+        <DialogTitle>{initialData ? 'Editar plano' : 'Criar novo plano'}</DialogTitle>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <h2 className="text-xl font-semibold">{initialData ? 'Editar plano' : 'Criar novo plano'}</h2>
-
           <div>
-            <Label>Nome</Label>
-            <Input {...register('name')} />
+            <Label htmlFor="plan-name">Nome</Label>
+            <Input id="plan-name" {...register('name')} autoFocus />
             {errors.name && <p className="text-sm text-red-600">{errors.name.message}</p>}
           </div>
 
           <div>
-            <Label>Máximo de estudantes</Label>
-            <Input type="number" {...register('maxStudents', { valueAsNumber: true })} />
+            <Label htmlFor="plan-max-students">Máximo de estudantes</Label>
+            <Input
+              id="plan-max-students"
+              type="number"
+              min={1}
+              {...register('maxStudents', { valueAsNumber: true })}
+            />
             {errors.maxStudents && <p className="text-sm text-red-600">{errors.maxStudents.message}</p>}
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
-              <Label>Preço mensal</Label>
-              <Input type="number" step="0.01" {...register('priceMonthly', { valueAsNumber: true })} />
+              <Label htmlFor="plan-price-monthly">Preço mensal</Label>
+              <Input
+                id="plan-price-monthly"
+                type="number"
+                min={0}
+                step="0.01"
+                {...register('priceMonthly', { valueAsNumber: true })}
+              />
               {errors.priceMonthly && <p className="text-sm text-red-600">{errors.priceMonthly.message}</p>}
             </div>
             <div className="flex-1">
-              <Label>Preço anual</Label>
-              <Input type="number" step="0.01" {...register('priceYearly', { valueAsNumber: true })} />
+              <Label htmlFor="plan-price-yearly">Preço anual</Label>
+              <Input
+                id="plan-price-yearly"
+                type="number"
+                min={0}
+                step="0.01"
+                {...register('priceYearly', { valueAsNumber: true })}
+              />
               {errors.priceYearly && <p className="text-sm text-red-600">{errors.priceYearly.message}</p>}
             </div>
           </div>
 
           <div>
-            <Label>Descrição</Label>
-            <Textarea {...register('description')} />
+            <Label htmlFor="plan-description">Descrição</Label>
+            <Textarea id="plan-description" rows={3} {...register('description')} />
             {errors.description && <p className="text-sm text-red-600">{errors.description.message}</p>}
           </div>
 
           <Button type="submit" disabled={loading} className="w-full">
-            {loading ? 'Salvando...' : initialData ? 'Salvar alterações' : 'Criar plano'}
+            {loading
+              ? 'Salvando...'
+              : initialData
+              ? 'Salvar alterações'
+              : 'Criar plano'}
           </Button>
         </form>
       </DialogContent>

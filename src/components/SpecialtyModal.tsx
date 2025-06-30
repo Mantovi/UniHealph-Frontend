@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -46,25 +46,21 @@ const SpecialtyModal = ({ open, onClose, onSubmit, initialData, loading }: Props
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent>
-        <DialogTitle>Especialidade</DialogTitle>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <h2 className="text-xl font-semibold">
             {initialData ? 'Editar Especialidade' : 'Nova Especialidade'}
           </h2>
-
           <div>
             <Label>Nome</Label>
             <Input {...register('name')} />
             {errors.name && <p className="text-sm text-red-600">{errors.name.message}</p>}
           </div>
-
           <div>
-            <Label>
-              <input type="checkbox" {...register('active')} className="mr-2" />
-              Ativa
+            <Label className="flex items-center gap-2">
+              <input type="checkbox" {...register('active')} className="accent-green-600" />
+              Especialidade ativa
             </Label>
           </div>
-
           <Button type="submit" disabled={loading} className="w-full">
             {loading ? 'Salvando...' : initialData ? 'Salvar alterações' : 'Criar Especialidade'}
           </Button>

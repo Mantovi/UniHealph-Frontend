@@ -53,9 +53,11 @@ const Categories = () => {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4 space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
         <h1 className="text-2xl font-bold">Categorias</h1>
-        <Button onClick={() => navigate('/admin/categories/create', { state: { backgroundLocation: location } })}>+ Nova Categoria</Button>
+        <Button onClick={() => navigate('/admin/categories/create', { state: { backgroundLocation: location } })}>
+          + Nova Categoria
+        </Button>
       </div>
 
       {loading ? (
@@ -63,24 +65,36 @@ const Categories = () => {
       ) : (
         <div className="space-y-4">
           {categories.map((c) => (
-            <div key={c.id} className="border rounded p-4 bg-white shadow flex justify-between items-center">
-              <div>
+            <div
+              key={c.id}
+              className="border rounded-xl p-6 bg-white shadow flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 min-h-[110px] transition-all"
+            >
+              <div className="flex-1">
                 <h2 className="text-lg font-medium">{c.name}</h2>
                 <p className="text-sm text-gray-500">
-                  Status: {c.active ? 'Ativa' : 'Inativa'} - Tipos de produtos: {c.productTypes?.length ?? 0}
+                  Status: <span className={c.active ? "text-green-700" : "text-red-600"}>{c.active ? 'Ativa' : 'Inativa'}</span>
+                  {" "}• Tipos de produtos: {c.productTypes?.length ?? 0}
                 </p>
               </div>
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={() => navigate(`/admin/categories/update/${c.id}`, { state: { backgroundLocation: location } })}>Editar</Button>
+              <div className="flex flex-row gap-2 w-full sm:w-auto">
+                <Button
+                  variant="outline"
+                  className="w-full sm:w-auto"
+                  onClick={() => navigate(`/admin/categories/update/${c.id}`, { state: { backgroundLocation: location } })}
+                >
+                  Editar
+                </Button>
                 <Button
                   variant={c.active ? "destructive" : "default"}
+                  className="w-full sm:w-auto"
                   onClick={() => handleToggleActive(c.id, c.active)}
                   disabled={actionLoadingId === c.id}
                 >
                   {actionLoadingId === c.id
                     ? 'Aguarde...'
                     : c.active ? 'Desativar' : 'Reativar'}
-                </Button>              </div>
+                </Button>
+              </div>
             </div>
           ))}
         </div>

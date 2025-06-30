@@ -27,7 +27,7 @@ const CheckoutModal: FunctionComponent<Props> = ({ open, onClose, onConfirm, pro
         <DialogHeader>
           <DialogTitle>Finalizar Compra</DialogTitle>
         </DialogHeader>
-        <p className="text-sm text-gray-600 mb-4">
+        <p className="text-sm text-blue-900 mb-4">
           Selecione a forma de pagamento para o produto <strong>{productName}</strong>
         </p>
         <div className="space-y-2">
@@ -35,7 +35,7 @@ const CheckoutModal: FunctionComponent<Props> = ({ open, onClose, onConfirm, pro
             <label
               key={option.id}
               className={`flex items-center gap-2 cursor-pointer p-2 rounded border ${
-                selected?.id === option.id ? 'border-primary' : 'border-gray-300'
+                selected?.id === option.id ? 'border-emerald-600' : 'border-gray-300'
               }`}
             >
               <input
@@ -46,13 +46,22 @@ const CheckoutModal: FunctionComponent<Props> = ({ open, onClose, onConfirm, pro
                 onChange={() => setSelected(option)}
               />
               <span>{option.type}</span>
-              {option.description && <span className="text-xs text-gray-500 ml-2">{option.description}</span>}
+              {option.description && (
+                <span className="text-xs text-gray-500 ml-2">{option.description}</span>
+              )}
             </label>
           ))}
         </div>
-        <div className="mt-6 flex justify-end">
-          <Button onClick={handleConfirm} disabled={!selected}>
+        <div className="mt-6 flex flex-col sm:flex-row gap-2 justify-end">
+          <Button
+            onClick={handleConfirm}
+            disabled={!selected}
+            className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700"
+          >
             Finalizar compra
+          </Button>
+          <Button variant="ghost" onClick={onClose} className="w-full sm:w-auto">
+            Cancelar
           </Button>
         </div>
       </DialogContent>

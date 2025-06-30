@@ -4,6 +4,7 @@ import type { OrderResponse } from '@/types/order';
 import { toast } from 'react-toastify';
 import OrderCard from '@/components/OrderCard';
 import { Loader2 } from 'lucide-react';
+import { sortByDateDesc } from '@/utils/sort';
 
 const Orders = () => {
   const [orders, setOrders] = useState<OrderResponse[]>([]);
@@ -13,7 +14,7 @@ const Orders = () => {
     const fetchOrders = async () => {
       try {
         const data = await getOrders();
-        setOrders(data);
+        setOrders(sortByDateDesc(data, 'createdAt'));
       } catch {
         toast.error('Erro ao carregar seus pedidos');
       } finally {

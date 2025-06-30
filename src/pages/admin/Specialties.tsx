@@ -53,7 +53,7 @@ const Specialties = () => {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4 space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
         <h1 className="text-2xl font-bold">Especialidades</h1>
         <Button onClick={() => navigate('/admin/specialties/create', { state: { backgroundLocation: location } })}>
           + Nova Especialidade
@@ -65,22 +65,28 @@ const Specialties = () => {
       ) : (
         <div className="space-y-4">
           {specialties.map((item) => (
-            <div key={item.id} className="border rounded p-4 bg-white shadow flex justify-between items-center">
+            <div
+              key={item.id}
+              className="border rounded-xl p-6 bg-white shadow flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 min-h-[110px]"
+            >
               <div>
                 <h2 className="text-lg font-medium">{item.name}</h2>
                 <p className="text-sm text-gray-500">
-                  Status: {item.active ? 'Ativa' : 'Inativa'} - Subespecialidades: {item.subSpecialties.length}
+                  Status: <span className={item.active ? "text-green-700" : "text-red-600"}>{item.active ? 'Ativa' : 'Inativa'}</span>
+                  {" "}• Subespecialidades: {item.subSpecialties.length}
                 </p>
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-row gap-2 w-full sm:w-auto">
                 <Button
                   variant="outline"
+                  className="w-full sm:w-auto"
                   onClick={() => navigate(`/admin/specialties/update/${item.id}`, { state: { backgroundLocation: location } })}
                 >
                   Editar
                 </Button>
                 <Button
                   variant={item.active ? "destructive" : "default"}
+                  className="w-full sm:w-auto"
                   onClick={() => handleToggleActive(item.id, item.active)}
                   disabled={actionLoadingId === item.id}
                 >

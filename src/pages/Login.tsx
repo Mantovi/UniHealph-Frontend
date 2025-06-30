@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import type { AxiosError } from 'axios';
 import type { ApiResponse } from '@/types/api';
+import { University } from 'lucide-react';
 
 const schema = z.object({
     email: z.string().email({message: "Email inválido"}),
@@ -48,29 +49,70 @@ const onSubmit = async (data: LoginRequest): Promise<void> => {
   }
 };
 
-    return (
-        <div className="max-w-sm mx-auto mt-20 p-6 bg-white shadow-xl rounded-2xl">
-            <h1 className="text-2xl font-bold mb-6 text-center">Entrar na Uni-Healph</h1>
-
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div>
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" {...register('email')} />
-                {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
-            </div>
-
-        <div>
-          <Label htmlFor="password">Senha</Label>
-          <Input id="password" type="password" {...register('password')} />
-          {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 flex flex-col justify-center">
+      <div className="max-w-sm mx-auto w-full p-7 bg-white shadow-2xl rounded-3xl border border-blue-100">
+        
+        <div className="mb-6 text-center">
+          <h2 className="text-3xl font-extrabold text-blue-900 tracking-tight leading-tight">
+            Bem-vindo à
+          </h2>
+          <div className="inline-block mt-1 px-4 py-1 bg-blue-100 rounded-full shadow text-2xl font-bold text-blue-700 tracking-wide">
+            Uni<span className="text-emerald-600">+</span>Healph
+          </div>
         </div>
 
-        <Button type="submit" disabled={isSubmitting} className="w-full">
-          {isSubmitting ? 'Entrando...' : 'Entrar'}
-        </Button>
-      </form>
+        <h1 className="text-xl font-semibold mb-6 text-center text-blue-800">
+          Entrar na plataforma
+        </h1>
+
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div>
+            <Label htmlFor="email" className="text-blue-900 font-medium">Email</Label>
+            <Input id="email" type="email" {...register('email')} autoFocus className="mt-1" />
+            {errors.email && (
+              <p className="text-orange-600 text-xs mt-1">{errors.email.message}</p>
+            )}
+          </div>
+
+          <div>
+            <Label htmlFor="password" className="text-blue-900 font-medium">Senha</Label>
+            <Input id="password" type="password" {...register('password')} className="mt-1" />
+            {errors.password && (
+              <p className="text-orange-600 text-xs mt-1">{errors.password.message}</p>
+            )}
+          </div>
+
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full bg-emerald-600 hover:bg-emerald-700 text-lg font-bold mt-3 py-2"
+          >
+            {isSubmitting ? 'Entrando...' : 'Entrar'}
+          </Button>
+        </form>
+                <div className="flex flex-col gap-3 mt-7">
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full border-blue-300 text-blue-800 font-semibold"
+            onClick={() => navigate('/register')}
+          >
+            Cadastrar-se
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            className="w-full bg-blue-200 hover:bg-blue-300 text-blue-900 font-semibold flex items-center justify-center gap-2"
+            onClick={() => navigate('/university-request')}
+          >
+            <University size={18} className="text-blue-800" />
+            Registrar universidade
+          </Button>
+        </div>
+      </div>
     </div>
-    );
+  );
 }
 
 export default Login;

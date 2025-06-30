@@ -74,9 +74,9 @@ const ReviewSection = ({ productId, isActive }: Props) => {
   const otherReviews = reviews.filter((r) => r.userId !== user?.id);
 
   return (
-    <section className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
       <div>
-        <h2 className="text-lg font-semibold mb-2">Avaliações ({totalReviews})</h2>
+        <h2 className="text-lg font-semibold mb-2 text-blue-900">Avaliações ({totalReviews})</h2>
         <div className="flex items-center gap-2 mb-4">
           <span className="text-3xl font-bold">{average.toFixed(1)}</span>
           <div className="flex">
@@ -90,7 +90,6 @@ const ReviewSection = ({ productId, isActive }: Props) => {
             ))}
           </div>
         </div>
-
         {ratingDistribution.map((item) => (
           <div key={item.star} className="flex items-center gap-2 text-sm">
             <span>{item.star}★</span>
@@ -103,9 +102,8 @@ const ReviewSection = ({ productId, isActive }: Props) => {
             <span>{item.count}</span>
           </div>
         ))}
-
         {isActive && (
-          <Button className="mt-4" onClick={() => {
+          <Button className="mt-4 w-full md:w-auto bg-emerald-600 hover:bg-emerald-700 text-black" onClick={() => {
             setEditReview(null);
             setModalOpen(true);
           }}>
@@ -115,7 +113,7 @@ const ReviewSection = ({ productId, isActive }: Props) => {
       </div>
 
       <div
-        className="lg:col-span-2 border rounded p-4 max-h-[480px] overflow-y-auto bg-white"
+        className="md:col-span-2 border rounded-2xl p-4 max-h-[400px] overflow-y-auto bg-white scrollbar-thin"
         ref={containerRef}
       >
         {myReview && (
@@ -173,7 +171,6 @@ const ReviewSection = ({ productId, isActive }: Props) => {
           ))
         )}
       </div>
-
       <ReviewModal
         open={modalOpen}
         productId={productId}
@@ -190,6 +187,6 @@ const ReviewSection = ({ productId, isActive }: Props) => {
       />
     </section>
   );
-}
+};
 
 export default ReviewSection;

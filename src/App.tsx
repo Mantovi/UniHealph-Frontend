@@ -7,11 +7,11 @@ function App() {
   useAuthInit()
 
   return (
-    <>
-      <AppRoutes/>
-      <ToastContainer
+  <>
+    <AppRoutes />
+    <ToastContainer
       position="top-center"
-      autoClose={1500}
+      autoClose={1000}
       hideProgressBar
       closeOnClick
       pauseOnHover={false}
@@ -19,8 +19,9 @@ function App() {
       newestOnTop={true}
       limit={1}
       theme="light"
-      style={{ fontSize: '0.875rem', minHeight: '40px' }}/>
-    </>
+      toastClassName="text-sm min-h-10"
+    />
+  </>
   )
 }
 

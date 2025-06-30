@@ -45,20 +45,18 @@ const PaymentMethodModal = ({ open, onClose, onSubmit, initialData, loading }: P
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent>
-        <DialogTitle>Método de pagamento</DialogTitle>
+      <DialogContent className="max-w-md w-full">
+        <DialogTitle>{initialData ? 'Editar método' : 'Novo método de pagamento'}</DialogTitle>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <h2 className="text-xl font-semibold">{initialData ? 'Editar método' : 'Novo método de pagamento'}</h2>
-
           <div>
-            <Label>Tipo</Label>
-            <Input {...register('type')} />
+            <Label htmlFor="pm-type">Tipo</Label>
+            <Input id="pm-type" {...register('type')} autoFocus />
             {errors.type && <p className="text-sm text-red-600">{errors.type.message}</p>}
           </div>
 
           <div>
-            <Label>Descrição</Label>
-            <Input {...register('description')} />
+            <Label htmlFor="pm-description">Descrição</Label>
+            <Input id="pm-description" {...register('description')} />
             {errors.description && <p className="text-sm text-red-600">{errors.description.message}</p>}
           </div>
 
