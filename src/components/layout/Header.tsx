@@ -41,16 +41,12 @@ const Header = () => {
     <>
       <header className="bg-white shadow sticky top-0 z-50">
         <div className="max-w-7xl mx-auto flex items-center justify-between px-2 md:px-4 py-2 md:py-3">
-          <Link to="/" className="flex items-center gap-2" aria-label="Página inicial">
+          <Link to="/" className="flex items-center" aria-label="Página inicial">
             <img
               src={Logo}
               alt="Logo Uni-Healph"
-              className="object-contain"
-              style={{
-                height: window.innerWidth < 768 ? 32 : 40, 
-                width: 'auto',
-                minWidth: window.innerWidth < 768 ? 32 : 40,
-              }}
+              className="object-contain h-8 md:h-10 w-auto"
+              style={{ minWidth: 32 }}
             />
           </Link>
 
@@ -68,19 +64,13 @@ const Header = () => {
 
           <form
             onSubmit={handleSearch}
-            className={`flex-1 mx-2 flex
-            ${window.innerWidth < 768 ? 'max-w-full' : 'max-w-xl'}
-            `}
+            className="flex-1 flex mx-2 max-w-full md:max-w-xl"
           >
             <Input
               placeholder="Buscar produtos..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="rounded-r-none"
-              style={{
-                minWidth: window.innerWidth < 768 ? 0 : 180,
-                width: window.innerWidth < 768 ? '100%' : undefined,
-              }}
+              className="rounded-r-none flex-1 min-w-0"
             />
             <Button type="submit" className="rounded-l-none px-3">
               <Search size={18} />

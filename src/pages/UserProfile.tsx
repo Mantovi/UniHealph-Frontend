@@ -25,6 +25,7 @@ import type { PaymentMethod } from '@/types/payment';
 import { getPlans } from '@/api/plans';
 import { getPaymentMethods } from '@/api/payment';
 import { showApiMessage } from '@/utils/showApiMessage';
+import Sidebar from '@/components/Sidebar';
 
 function maskPhone(value: string): string {
   value = value.replace(/\D/g, "");
@@ -193,9 +194,11 @@ const UserProfile = () => {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 flex flex-col justify-center py-10">
-      <div className="max-w-3xl mx-auto w-full bg-white rounded-3xl shadow-2xl border border-blue-100 p-8">
+return (
+  <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 flex flex-col md:flex-row py-8">
+    <Sidebar />
+    <main className="flex-1 flex justify-center">
+      <div className="max-w-3xl w-full bg-white rounded-3xl shadow-2xl border border-blue-100 p-6 md:p-8 mx-auto">
         <h1 className="text-3xl font-bold text-blue-900 text-center mb-7">
           Minha Conta
         </h1>
@@ -206,7 +209,6 @@ const UserProfile = () => {
             <Input id="name" {...register('name')} className="mt-1" />
             {errors.name && <p className="text-orange-600 text-xs mt-1">{errors.name.message}</p>}
           </div>
-
           <div>
             <Label htmlFor="phone" className="text-blue-900 font-medium">Telefone</Label>
             <Input
@@ -220,33 +222,27 @@ const UserProfile = () => {
             />
             {errors.phone && <p className="text-orange-600 text-xs mt-1">{errors.phone.message}</p>}
           </div>
-
           <div>
             <Label htmlFor="email" className="text-blue-900 font-medium">Email</Label>
             <Input id="email" value={user?.email} readOnly className='bg-gray-200' />
           </div>
-
           <div>
             <Label htmlFor="cpf" className="text-blue-900 font-medium">CPF</Label>
             <Input id="cpf" value={user?.cpf} readOnly className='bg-gray-200' />
           </div>
-
           <div>
             <Label htmlFor="university" className="text-blue-900 font-medium">Universidade</Label>
             <Input id="university" value={user?.universityName} readOnly className='bg-gray-200' />
           </div>
-
           <div>
             <Label htmlFor="role" className="text-blue-900 font-medium">Função</Label>
             <Input id="role" value={user?.role} readOnly className='bg-gray-200' />
           </div>
-
           <div className="md:col-span-2">
             <Label htmlFor="password" className="text-blue-900 font-medium">Nova senha</Label>
             <Input id="password" type="password" {...register('password')} />
             {errors.password && <p className="text-orange-600 text-xs mt-1">{errors.password.message}</p>}
           </div>
-
           <div className="md:col-span-2">
             <Label htmlFor="currentPassword" className="text-blue-900 font-medium">Senha atual</Label>
             <Input id="currentPassword" type="password" {...register('currentPassword')} />
@@ -254,7 +250,6 @@ const UserProfile = () => {
               <p className="text-orange-600 text-xs mt-1">{errors.currentPassword.message}</p>
             )}
           </div>
-
           <div className="md:col-span-2">
             <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700 text-lg font-bold mt-3 py-2" disabled={isSubmitting}>
               {isSubmitting ? 'Salvando...' : 'Salvar alterações'}
@@ -323,8 +318,10 @@ const UserProfile = () => {
           </div>
         )}
       </div>
-    </div>
-  );
+    </main>
+  </div>
+);
+
 };
 
 export default UserProfile;
