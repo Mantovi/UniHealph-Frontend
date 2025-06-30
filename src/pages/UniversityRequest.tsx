@@ -17,6 +17,7 @@ import type { Plan } from '@/types/plan';
 import type { PaymentMethod } from '@/types/payment';
 import { getPlans } from '@/api/plans';
 import { getPaymentMethods } from '@/api/payment';
+import Logo from '@/assets/Logo com fundo.jpg';
 
 function maskCnpj(value: string): string {
   value = value.replace(/\D/g, '');
@@ -137,7 +138,7 @@ const UniversityRequest = () => {
         
         <button
           type="button"
-          className="absolute top-7 left-7 flex items-center gap-1 text-blue-700 hover:text-blue-900 font-medium"
+          className="absolute top-7 left-7 flex items-center gap-1 text-emerald-500 hover:text-emerald-700 font-medium"
           onClick={() => navigate(-1)}
           aria-label="Voltar"
         >
@@ -146,8 +147,12 @@ const UniversityRequest = () => {
         </button>
 
         <div className="mb-4 text-center">
-          <div className="inline-block px-4 py-1 bg-blue-100 rounded-full shadow text-2xl font-bold text-blue-700 tracking-wide">
-            Uni<span className="text-emerald-600">+</span>Healph
+          <div className="mt-4 flex justify-center">
+            <img
+              src={Logo}
+              alt="Logo Uni-Healph"
+              className="h-12 md:h-12 object-contain"
+            />
           </div>
         </div>
 

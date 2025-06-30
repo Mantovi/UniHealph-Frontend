@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import { Search, ShoppingCart, UserCircle, LayoutGrid, Tag, Info, Mail } from 'lucide-react';
-import Logo from '@/assets/Logo.png';
+import Logo from '@/assets/Logo com fundo.jpg';
 
 const NAV_LINKS = [
   { to: '/products', label: 'Produtos' },

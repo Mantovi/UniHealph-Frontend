@@ -78,7 +78,7 @@ const ProductCard: FunctionComponent<Props> = ({ product, onAddToCart, onViewDet
         </Button>
         <Button
           variant="default"
-          className="w-full font-medium bg-black hover:bg-black/80"
+          className="w-full font-medium bg-emerald-900 hover:bg-black"
 
           onClick={(e) => { e.stopPropagation(); handleClick(); }}
           disabled={isDisabled}

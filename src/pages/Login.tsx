@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import type { AxiosError } from 'axios';
 import type { ApiResponse } from '@/types/api';
 import { University } from 'lucide-react';
+import Logo from '@/assets/Logo com fundo.jpg';
 
 const schema = z.object({
     email: z.string().email({message: "Email inválido"}),
@@ -57,8 +58,12 @@ const onSubmit = async (data: LoginRequest): Promise<void> => {
           <h2 className="text-3xl font-extrabold text-blue-900 tracking-tight leading-tight">
             Bem-vindo à
           </h2>
-          <div className="inline-block mt-1 px-4 py-1 bg-blue-100 rounded-full shadow text-2xl font-bold text-blue-700 tracking-wide">
-            Uni<span className="text-emerald-600">+</span>Healph
+          <div className="mt-4 flex justify-center">
+            <img
+              src={Logo}
+              alt="Logo Uni-Healph"
+              className="h-12 md:h-12 object-contain"
+            />
           </div>
         </div>
 

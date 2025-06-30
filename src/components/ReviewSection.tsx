@@ -103,7 +103,7 @@ const ReviewSection = ({ productId, isActive }: Props) => {
           </div>
         ))}
         {isActive && (
-          <Button className="mt-4 w-full md:w-auto bg-emerald-600 hover:bg-emerald-700 text-black" onClick={() => {
+          <Button className="mt-4 w-full md:w-auto bg-emerald-700 hover:bg-emerald-500 text-white" onClick={() => {
             setEditReview(null);
             setModalOpen(true);
           }}>
